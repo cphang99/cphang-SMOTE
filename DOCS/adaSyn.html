@@ -1,0 +1,196 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module adaSyn</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>adaSyn</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/chris/Documents/Manchester_Masters/MachineLearning/9625193-PHANG-code/adaSyn.py">/home/chris/Documents/Manchester_Masters/MachineLearning/9625193-PHANG-code/adaSyn.py</a></font></td></tr></table>
+    <p><tt>This&nbsp;module&nbsp;implements&nbsp;the&nbsp;<a href="#adaSyn">adaSyn</a>&nbsp;algorithm<br>
+Note&nbsp;that&nbsp;this&nbsp;implementation&nbsp;is&nbsp;only&nbsp;suitable&nbsp;for&nbsp;datasets&nbsp;which&nbsp;have&nbsp;binary&nbsp;classification.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="sklearn.cross_validation.html">sklearn.cross_validation</a><br>
+<a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="sklearn.metrics.html">sklearn.metrics</a><br>
+<a href="sklearn.neighbors.html">sklearn.neighbors</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="smoteTransform.html#smoteTransform">smoteTransform.smoteTransform</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="adaSyn.html#adaSyn">adaSyn</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="adaSyn">class <strong>adaSyn</strong></a>(<a href="smoteTransform.html#smoteTransform">smoteTransform.smoteTransform</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Performs&nbsp;the&nbsp;ADASYN&nbsp;transform&nbsp;on&nbsp;unbalanced&nbsp;data&nbsp;sets.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;k:&nbsp;number&nbsp;of&nbsp;nearest&nbsp;neighbors.&nbsp;Default&nbsp;=&nbsp;5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;smote:&nbsp;the&nbsp;oversampling&nbsp;SMOTE&nbsp;percentage.&nbsp;Default&nbsp;=&nbsp;200.&nbsp;This&nbsp;is&nbsp;there&nbsp;as&nbsp;the&nbsp;class&nbsp;is&nbsp;capable&nbsp;of&nbsp;doing&nbsp;SMOTE&nbsp;oversampling&nbsp;as&nbsp;well<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;being&nbsp;a&nbsp;subclass&nbsp;of&nbsp;<a href="smoteTransform.html#smoteTransform">smoteTransform</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;underSamplePercentage:&nbsp;How&nbsp;much&nbsp;to&nbsp;undersample&nbsp;the&nbsp;majority&nbsp;class.&nbsp;Default&nbsp;=&nbsp;15&nbsp;(%)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;minorityLabel:&nbsp;the&nbsp;class&nbsp;of&nbsp;the&nbsp;minority&nbsp;label.&nbsp;Default&nbsp;=1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;randomState:&nbsp;Sets&nbsp;a&nbsp;seed&nbsp;for&nbsp;any&nbsp;random&nbsp;generator&nbsp;functions&nbsp;within&nbsp;the&nbsp;<a href="smoteTransform.html#smoteTransform">smoteTransform</a>&nbsp;object&nbsp;for&nbsp;testing.&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default&nbsp;=&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;beta:&nbsp;The&nbsp;<a href="#adaSyn">adaSyn</a>&nbsp;beta&nbsp;parameter.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="adaSyn-__init__"><strong>__init__</strong></a>(self, k<font color="#909090">=5</font>, smote<font color="#909090">=200</font>, underSamplePercentage<font color="#909090">=15</font>, minorityLabel<font color="#909090">=1</font>, randomState<font color="#909090">=None</font>, beta<font color="#909090">=1</font>)</dt></dl>
+
+<dl><dt><a name="adaSyn-adaSynAdd"><strong>adaSynAdd</strong></a>(self, data, labels)</dt><dd><tt>Determines&nbsp;the&nbsp;number&nbsp;of&nbsp;synthetic&nbsp;samples&nbsp;to&nbsp;generate&nbsp;for&nbsp;each&nbsp;minority&nbsp;example,&nbsp;and&nbsp;generates&nbsp;the&nbsp;synthetic&nbsp;datapoints.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;examples&nbsp;with&nbsp;all&nbsp;their&nbsp;features<br>
+&nbsp;&nbsp;&nbsp;&nbsp;labels:&nbsp;classlabels&nbsp;for&nbsp;all&nbsp;corresponding&nbsp;examples.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:&nbsp;a&nbsp;set&nbsp;of&nbsp;synthetic&nbsp;datapoints</tt></dd></dl>
+
+<dl><dt><a name="adaSyn-getProcessedData"><strong>getProcessedData</strong></a>(self, data, labels, underSamplePercentage<font color="#909090">=None</font>, adaSynBeta<font color="#909090">=None</font>)</dt><dd><tt>Conveinence&nbsp;method.&nbsp;From&nbsp;a&nbsp;given&nbsp;dataset&nbsp;with&nbsp;corresponding&nbsp;labels,&nbsp;will&nbsp;return<br>
+a&nbsp;new&nbsp;data&nbsp;set&nbsp;which&nbsp;has&nbsp;had&nbsp;its&nbsp;majority&nbsp;class&nbsp;undersampled&nbsp;(optional)&nbsp;and&nbsp;its&nbsp;minority&nbsp;class&nbsp;oversampled&nbsp;(optional).<br>
+This&nbsp;is&nbsp;an&nbsp;overriden&nbsp;method&nbsp;of&nbsp;the&nbsp;base&nbsp;<a href="smoteTransform.html#smoteTransform">smoteTransform</a>&nbsp;class&nbsp;that&nbsp;implements&nbsp;the&nbsp;<a href="#adaSyn">adaSyn</a>&nbsp;algorithm&nbsp;instead<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:&nbsp;A&nbsp;dataset&nbsp;consisting&nbsp;of&nbsp;an&nbsp;oversampled&nbsp;minority&nbsp;class&nbsp;and&nbsp;an&nbsp;undersampled&nbsp;majority&nbsp;class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;as&nbsp;a&nbsp;tuple&nbsp;(data,&nbsp;labels)</tt></dd></dl>
+
+<dl><dt><a name="adaSyn-validate"><strong>validate</strong></a>(self, data, labels, adaSynBeta<font color="#909090">=None</font>, toStandardise<font color="#909090">=False</font>, toShuffle<font color="#909090">=False</font>, kfolds<font color="#909090">=10</font>)</dt><dd><tt>See&nbsp;documenation&nbsp;for&nbsp;<a href="#adaSyn-validate">validate</a>()&nbsp;in&nbsp;<a href="smoteTransform.html#smoteTransform">smoteTransform</a>.py.&nbsp;&nbsp;Performs&nbsp;exact&nbsp;same&nbsp;methodology&nbsp;except&nbsp;we<br>
+&nbsp;&nbsp;&nbsp;use&nbsp;differing&nbsp;beta&nbsp;parameters&nbsp;as&nbsp;opposed&nbsp;to&nbsp;smote.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;examples&nbsp;with&nbsp;all&nbsp;their&nbsp;features<br>
+&nbsp;&nbsp;&nbsp;&nbsp;labels:&nbsp;classlabels&nbsp;for&nbsp;all&nbsp;corresponding&nbsp;examples.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;adaSynBeta:&nbsp;Can&nbsp;be&nbsp;specified,&nbsp;otherwise&nbsp;use&nbsp;defaults:&nbsp;[1,&nbsp;0.9,&nbsp;0.7,&nbsp;0.5,&nbsp;0.3]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;toStandardise:&nbsp;Do&nbsp;we&nbsp;normalise&nbsp;the&nbsp;data?<br>
+&nbsp;&nbsp;&nbsp;&nbsp;toShuffle:&nbsp;Do&nbsp;we&nbsp;shuffle&nbsp;the&nbsp;data?<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kfolds:&nbsp;Number&nbsp;of&nbsp;folds&nbsp;in&nbsp;the&nbsp;CV.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:&nbsp;a&nbsp;set&nbsp;of&nbsp;AUCs</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="smoteTransform.html#smoteTransform">smoteTransform.smoteTransform</a>:<br>
+<dl><dt><a name="adaSyn-cvTree"><strong>cvTree</strong></a>(self, data, labels, kfold_iterator, toStandardise<font color="#909090">=False</font>, underAndOversample<font color="#909090">=False</font>, noDataChange<font color="#909090">=False</font>, undersampleOnly<font color="#909090">=False</font>, smotePercentage<font color="#909090">=None</font>, underSamplePercentage<font color="#909090">=None</font>, adaSyn<font color="#909090">=False</font>, adaSynBeta<font color="#909090">=None</font>)</dt><dd><tt>Performs&nbsp;cross&nbsp;validation.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;test&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;labels:&nbsp;Corresponding&nbsp;labels&nbsp;for&nbsp;the&nbsp;test&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kfold_iterator:&nbsp;The&nbsp;iterator&nbsp;used&nbsp;to&nbsp;generate&nbsp;the&nbsp;folds&nbsp;for&nbsp;the&nbsp;CV<br>
+&nbsp;&nbsp;&nbsp;&nbsp;toStandardise:&nbsp;If&nbsp;the&nbsp;dataset&nbsp;is&nbsp;to&nbsp;be&nbsp;normalised<br>
+&nbsp;&nbsp;&nbsp;&nbsp;underAndOversample:&nbsp;Should&nbsp;it&nbsp;be&nbsp;under&nbsp;and&nbsp;over-sampled?<br>
+&nbsp;&nbsp;&nbsp;&nbsp;noDataChange:&nbsp;If&nbsp;CV&nbsp;should&nbsp;be&nbsp;performed&nbsp;on&nbsp;the&nbsp;original&nbsp;set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;undersampleOnly:&nbsp;Under&nbsp;sampling&nbsp;only<br>
+&nbsp;&nbsp;&nbsp;&nbsp;smotePercentage:&nbsp;A&nbsp;set&nbsp;SMOTE&nbsp;percentage,&nbsp;otherwise&nbsp;just&nbsp;uses&nbsp;the&nbsp;class&nbsp;Attribute<br>
+&nbsp;&nbsp;&nbsp;&nbsp;underSamplePercentage:&nbsp;see&nbsp;above<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#adaSyn">adaSyn</a>:&nbsp;Should&nbsp;the&nbsp;oversampling&nbsp;be&nbsp;done&nbsp;on&nbsp;using&nbsp;the&nbsp;AdaSyn&nbsp;alg?<br>
+&nbsp;&nbsp;&nbsp;&nbsp;adaSynBeta:&nbsp;If&nbsp;<a href="#adaSyn">adaSyn</a>&nbsp;alg&nbsp;is&nbsp;to&nbsp;be&nbsp;done,&nbsp;set&nbsp;the&nbsp;beta&nbsp;parameter.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:&nbsp;A&nbsp;set&nbsp;of&nbsp;scores&nbsp;from&nbsp;the&nbsp;cross&nbsp;validation</tt></dd></dl>
+
+<dl><dt><a name="adaSyn-fit"><strong>fit</strong></a>(self, data, labels)</dt><dd><tt>Fits&nbsp;the&nbsp;minority&nbsp;data&nbsp;to&nbsp;a&nbsp;knn&nbsp;classifier&nbsp;from&nbsp;a&nbsp;class<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;examples&nbsp;with&nbsp;all&nbsp;their&nbsp;features<br>
+&nbsp;&nbsp;&nbsp;&nbsp;labels:&nbsp;classlabels&nbsp;for&nbsp;all&nbsp;corresponding&nbsp;examples.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:&nbsp;a&nbsp;<a href="smoteTransform.html#smoteTransform">smoteTransform</a>&nbsp;object&nbsp;with&nbsp;a&nbsp;fitted&nbsp;data&nbsp;model.</tt></dd></dl>
+
+<dl><dt><a name="adaSyn-score"><strong>score</strong></a>(self, vaData, vaLabel, model)</dt><dd><tt>Returns&nbsp;the&nbsp;recall&nbsp;and&nbsp;fallout&nbsp;score&nbsp;given&nbsp;the&nbsp;data,&nbsp;its&nbsp;corresponding&nbsp;labels&nbsp;and&nbsp;the&nbsp;model&nbsp;itself<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;vadata:&nbsp;validation&nbsp;data&nbsp;examples&nbsp;with&nbsp;all&nbsp;their&nbsp;features<br>
+&nbsp;&nbsp;&nbsp;&nbsp;valabels:&nbsp;classlabels&nbsp;for&nbsp;all&nbsp;corresponding&nbsp;validation&nbsp;data&nbsp;examples.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;model:&nbsp;The&nbsp;model&nbsp;(which&nbsp;should&nbsp;already&nbsp;be&nbsp;trained&nbsp;with&nbsp;training&nbsp;data)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:&nbsp;The&nbsp;recall&nbsp;and&nbsp;fallout&nbsp;score&nbsp;as&nbsp;a&nbsp;tuple.</tt></dd></dl>
+
+<dl><dt><a name="adaSyn-transform"><strong>transform</strong></a>(self, adaSyn<font color="#909090">=False</font>, g<font color="#909090">=None</font>)</dt><dd><tt>Generates&nbsp;synthetic&nbsp;samples&nbsp;according&nbsp;to&nbsp;the&nbsp;SMOTE&nbsp;algorithm<br>
+&nbsp;<br>
+returns:&nbsp;Synthetic&nbsp;data&nbsp;points&nbsp;with&nbsp;their&nbsp;requisite&nbsp;minority&nbsp;class&nbsp;label&nbsp;as&nbsp;a&nbsp;tuple&nbsp;(data,&nbsp;labels).</tt></dd></dl>
+
+<dl><dt><a name="adaSyn-underSample"><strong>underSample</strong></a>(self, data, labels)</dt><dd><tt>Undersamples&nbsp;the&nbsp;majority&nbsp;class&nbsp;in&nbsp;an&nbsp;imbalanced&nbsp;dataset.<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;examples&nbsp;with&nbsp;all&nbsp;their&nbsp;features<br>
+&nbsp;&nbsp;&nbsp;&nbsp;labels:&nbsp;classlabels&nbsp;for&nbsp;all&nbsp;corresponding&nbsp;examples.<br>
+&nbsp;<br>
+Returns:&nbsp;a&nbsp;dataset&nbsp;with&nbsp;a&nbsp;set&nbsp;quantity&nbsp;of&nbsp;the&nbsp;majority&nbsp;class&nbsp;removed&nbsp;(undersampled)&nbsp;as&nbsp;a&nbsp;tuple&nbsp;of&nbsp;(data,&nbsp;labels).</tt></dd></dl>
+
+<dl><dt><a name="adaSyn-undersampleValidate"><strong>undersampleValidate</strong></a>(self, data, labels, toStandardise<font color="#909090">=False</font>, toShuffle<font color="#909090">=False</font>, kfolds<font color="#909090">=10</font>)</dt><dd><tt>Generates&nbsp;data-points&nbsp;(fp&nbsp;and&nbsp;tp)&nbsp;for&nbsp;generating&nbsp;a&nbsp;ROC&nbsp;curve&nbsp;through&nbsp;oversampling&nbsp;and&nbsp;undersampling&nbsp;of&nbsp;datasets<br>
+See&nbsp;the&nbsp;original&nbsp;SMOTE&nbsp;paper&nbsp;for&nbsp;more&nbsp;details.&nbsp;All&nbsp;datapoints&nbsp;are&nbsp;the&nbsp;product&nbsp;of&nbsp;a&nbsp;10-fold&nbsp;cross-validation<br>
+Original&nbsp;paper&nbsp;uses&nbsp;a&nbsp;C4.5&nbsp;tree&nbsp;classifier.&nbsp;As&nbsp;we're&nbsp;using&nbsp;the&nbsp;scikit-learn&nbsp;library,&nbsp;we're&nbsp;using&nbsp;the&nbsp;CART&nbsp;algorithm<br>
+instead,&nbsp;which&nbsp;is&nbsp;closely&nbsp;related.<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;is&nbsp;similar&nbsp;to&nbsp;the&nbsp;validate&nbsp;method,&nbsp;but&nbsp;does&nbsp;not&nbsp;do&nbsp;any&nbsp;SMOTE&nbsp;oversampling.&nbsp;This&nbsp;is&nbsp;used&nbsp;as&nbsp;a&nbsp;comparison<br>
+between&nbsp;only&nbsp;undersampling,&nbsp;and&nbsp;a&nbsp;combination&nbsp;of&nbsp;over-&nbsp;and&nbsp;under-sampling.<br>
+&nbsp;<br>
+The&nbsp;undersampling&nbsp;percentages&nbsp;are&nbsp;as&nbsp;follows:&nbsp;10,&nbsp;15,&nbsp;25,&nbsp;50,&nbsp;75,&nbsp;100,&nbsp;125,&nbsp;150,&nbsp;175,&nbsp;200,&nbsp;300,&nbsp;400,&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;500,&nbsp;600,&nbsp;700,&nbsp;800,&nbsp;1000,&nbsp;2000<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+The&nbsp;AUC&nbsp;is&nbsp;calculated&nbsp;and&nbsp;a&nbsp;csv&nbsp;file&nbsp;is&nbsp;saved&nbsp;corresponding&nbsp;to:<br>
+undersample%,&nbsp;mean&nbsp;recall,&nbsp;mean&nbsp;fallout,&nbsp;95%&nbsp;confidence&nbsp;(recall),&nbsp;95%&nbsp;confidence&nbsp;(fallout)<br>
+This&nbsp;file&nbsp;is&nbsp;saved&nbsp;as&nbsp;undersampleOnlyauc=[AUC]_.csv<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;examples&nbsp;with&nbsp;all&nbsp;their&nbsp;features<br>
+&nbsp;&nbsp;&nbsp;&nbsp;labels:&nbsp;classlabels&nbsp;for&nbsp;all&nbsp;corresponding&nbsp;examples.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;toStandardise:&nbsp;whether&nbsp;the&nbsp;datasets&nbsp;should&nbsp;be&nbsp;standardised&nbsp;(0&nbsp;mean&nbsp;with&nbsp;unit&nbsp;variance)&nbsp;before&nbsp;fitting.<br>
+&nbsp;<br>
+Returns:&nbsp;The&nbsp;auc&nbsp;from&nbsp;the&nbsp;resulting&nbsp;roc&nbsp;curve<br>
+&gt;&gt;&gt;&nbsp;csvFileName&nbsp;=&nbsp;'./datasets/phoneme.csv'<br>
+&gt;&gt;&gt;&nbsp;dataSet&nbsp;=&nbsp;numpy.genfromtxt(csvFileName,&nbsp;dtype=float,&nbsp;delimiter=",")<br>
+&gt;&gt;&gt;&nbsp;data,&nbsp;labels&nbsp;=&nbsp;samplerNoID(dataSet)<br>
+&gt;&gt;&gt;&nbsp;smote&nbsp;=&nbsp;<a href="smoteTransform.html#smoteTransform">smoteTransform</a>(randomState&nbsp;=&nbsp;255)<br>
+&gt;&gt;&gt;&nbsp;smote.<a href="#adaSyn-undersampleValidate">undersampleValidate</a>(data,&nbsp;labels,&nbsp;toStandardise=False)<br>
+[[&nbsp;0.79270129&nbsp;&nbsp;0.08599851]<br>
+&nbsp;[&nbsp;0.78681043&nbsp;&nbsp;0.09883799]<br>
+&nbsp;[&nbsp;0.79016826&nbsp;&nbsp;0.09998522]<br>
+&nbsp;[&nbsp;0.80423374&nbsp;&nbsp;0.11730889]<br>
+&nbsp;[&nbsp;0.83255765&nbsp;&nbsp;0.1435521&nbsp;]<br>
+&nbsp;[&nbsp;0.87347219&nbsp;&nbsp;0.21324935]<br>
+&nbsp;[&nbsp;0.85003933&nbsp;&nbsp;0.15736304]<br>
+&nbsp;[&nbsp;0.85440382&nbsp;&nbsp;0.19037023]<br>
+&nbsp;[&nbsp;0.86097302&nbsp;&nbsp;0.20513769]<br>
+&nbsp;[&nbsp;0.86576104&nbsp;&nbsp;0.217502&nbsp;&nbsp;]<br>
+&nbsp;[&nbsp;0.89098296&nbsp;&nbsp;0.24009012]<br>
+&nbsp;[&nbsp;0.92390897&nbsp;&nbsp;0.28186043]<br>
+&nbsp;[&nbsp;0.93745969&nbsp;&nbsp;0.31273222]<br>
+&nbsp;[&nbsp;0.94237268&nbsp;&nbsp;0.34739837]<br>
+&nbsp;[&nbsp;0.9418215&nbsp;&nbsp;&nbsp;0.3721151&nbsp;]<br>
+&nbsp;[&nbsp;0.94033133&nbsp;&nbsp;0.39831616]<br>
+&nbsp;[&nbsp;0.9537111&nbsp;&nbsp;&nbsp;0.41125992]<br>
+&nbsp;[&nbsp;0.96623317&nbsp;&nbsp;0.44349758]<br>
+&nbsp;[&nbsp;0.98032728&nbsp;&nbsp;0.53586075]]<br>
+0.869156962912<br>
+0.86915696291175371</tt></dd></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><tt>#Used&nbsp;to&nbsp;test&nbsp;the&nbsp;<a href="#adaSyn">adaSyn</a>&nbsp;class,&nbsp;takes&nbsp;a&nbsp;CSV&nbsp;file,&nbsp;puts&nbsp;it&nbsp;into&nbsp;numpy&nbsp;objects&nbsp;and&nbsp;sends&nbsp;it&nbsp;to&nbsp;the&nbsp;<a href="#adaSyn">adaSyn</a>&nbsp;class.</tt></dd></dl>
+</td></tr></table>
+</body></html>

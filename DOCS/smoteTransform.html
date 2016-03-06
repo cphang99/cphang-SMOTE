@@ -1,0 +1,257 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module smoteTransform</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>smoteTransform</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/chris/Documents/Manchester_Masters/MachineLearning/9625193-PHANG-code/smoteTransform.py">/home/chris/Documents/Manchester_Masters/MachineLearning/9625193-PHANG-code/smoteTransform.py</a></font></td></tr></table>
+    <p><tt>This&nbsp;module&nbsp;implements&nbsp;the&nbsp;SMOTE&nbsp;algorithm&nbsp;as&nbsp;described&nbsp;in&nbsp;https://www.jair.org/media/953/live-953-2037-jair.pdf.<br>
+Note&nbsp;that&nbsp;this&nbsp;implementation&nbsp;is&nbsp;only&nbsp;suitable&nbsp;for&nbsp;datasets&nbsp;which&nbsp;have&nbsp;binary&nbsp;classification.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="sklearn.cross_validation.html">sklearn.cross_validation</a><br>
+<a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="sklearn.metrics.html">sklearn.metrics</a><br>
+<a href="sklearn.neighbors.html">sklearn.neighbors</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+<a href="random.html">random</a><br>
+</td><td width="25%" valign=top><a href="scipy.html">scipy</a><br>
+<a href="sklearn.utils.html">sklearn.utils</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="smoteTransform.html#smoteTransform">smoteTransform</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="smoteTransform">class <strong>smoteTransform</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Performs&nbsp;the&nbsp;SMOTE&nbsp;transform&nbsp;on&nbsp;unbalanced&nbsp;data&nbsp;sets.<br>
+&nbsp;<br>
+Uses&nbsp;fit&nbsp;and&nbsp;transform&nbsp;methods&nbsp;to&nbsp;conform&nbsp;with&nbsp;general&nbsp;API&nbsp;of&nbsp;scikit-learn<br>
+Returns&nbsp;a&nbsp;set&nbsp;of&nbsp;synthetic&nbsp;datapoints.&nbsp;Would&nbsp;then&nbsp;require&nbsp;combination&nbsp;with&nbsp;the&nbsp;original&nbsp;dataset.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;k:&nbsp;number&nbsp;of&nbsp;nearest&nbsp;neighbors.&nbsp;Default&nbsp;=&nbsp;5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;smote:&nbsp;the&nbsp;oversampling&nbsp;SMOTE&nbsp;percentage.&nbsp;Default&nbsp;=&nbsp;200<br>
+&nbsp;&nbsp;&nbsp;&nbsp;underSamplePercentage:&nbsp;How&nbsp;much&nbsp;to&nbsp;undersample&nbsp;the&nbsp;majority&nbsp;class.&nbsp;Default&nbsp;=&nbsp;15&nbsp;(%)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;minorityLabel:&nbsp;the&nbsp;class&nbsp;of&nbsp;the&nbsp;minority&nbsp;label.&nbsp;Default&nbsp;=1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;randomState:&nbsp;Sets&nbsp;a&nbsp;seed&nbsp;for&nbsp;any&nbsp;random&nbsp;generator&nbsp;functions&nbsp;within&nbsp;the&nbsp;<a href="#smoteTransform">smoteTransform</a>&nbsp;object&nbsp;for&nbsp;testing.&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default&nbsp;=&nbsp;None<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="smoteTransform-__init__"><strong>__init__</strong></a>(self, k<font color="#909090">=5</font>, smote<font color="#909090">=200</font>, underSamplePercentage<font color="#909090">=15</font>, minorityLabel<font color="#909090">=1</font>, randomState<font color="#909090">=None</font>)</dt><dd><tt>Initialisation&nbsp;of&nbsp;the&nbsp;<a href="#smoteTransform">smoteTransform</a>&nbsp;object.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;k:&nbsp;number&nbsp;of&nbsp;nearest&nbsp;neighbors.&nbsp;Default&nbsp;=&nbsp;5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;smote:&nbsp;the&nbsp;oversampling&nbsp;SMOTE&nbsp;percentage.&nbsp;Default&nbsp;=&nbsp;200<br>
+&nbsp;&nbsp;&nbsp;&nbsp;underSamplePercentage:&nbsp;How&nbsp;much&nbsp;to&nbsp;undersample&nbsp;the&nbsp;majority&nbsp;class.&nbsp;Default&nbsp;=&nbsp;15&nbsp;(%)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;minorityLabel:&nbsp;the&nbsp;class&nbsp;of&nbsp;the&nbsp;minority&nbsp;label.&nbsp;Default&nbsp;=1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;randomState:&nbsp;Sets&nbsp;a&nbsp;seed&nbsp;for&nbsp;any&nbsp;random&nbsp;generator&nbsp;functions&nbsp;within&nbsp;the&nbsp;<a href="#smoteTransform">smoteTransform</a>&nbsp;object&nbsp;for&nbsp;testing.&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default&nbsp;=&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:&nbsp;a&nbsp;<a href="#smoteTransform">smoteTransform</a>&nbsp;object</tt></dd></dl>
+
+<dl><dt><a name="smoteTransform-cvTree"><strong>cvTree</strong></a>(self, data, labels, kfold_iterator, toStandardise<font color="#909090">=False</font>, underAndOversample<font color="#909090">=False</font>, noDataChange<font color="#909090">=False</font>, undersampleOnly<font color="#909090">=False</font>, smotePercentage<font color="#909090">=None</font>, underSamplePercentage<font color="#909090">=None</font>, adaSyn<font color="#909090">=False</font>, adaSynBeta<font color="#909090">=None</font>)</dt><dd><tt>Performs&nbsp;cross&nbsp;validation.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;test&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;labels:&nbsp;Corresponding&nbsp;labels&nbsp;for&nbsp;the&nbsp;test&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kfold_iterator:&nbsp;The&nbsp;iterator&nbsp;used&nbsp;to&nbsp;generate&nbsp;the&nbsp;folds&nbsp;for&nbsp;the&nbsp;CV<br>
+&nbsp;&nbsp;&nbsp;&nbsp;toStandardise:&nbsp;If&nbsp;the&nbsp;dataset&nbsp;is&nbsp;to&nbsp;be&nbsp;normalised<br>
+&nbsp;&nbsp;&nbsp;&nbsp;underAndOversample:&nbsp;Should&nbsp;it&nbsp;be&nbsp;under&nbsp;and&nbsp;over-sampled?<br>
+&nbsp;&nbsp;&nbsp;&nbsp;noDataChange:&nbsp;If&nbsp;CV&nbsp;should&nbsp;be&nbsp;performed&nbsp;on&nbsp;the&nbsp;original&nbsp;set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;undersampleOnly:&nbsp;Under&nbsp;sampling&nbsp;only<br>
+&nbsp;&nbsp;&nbsp;&nbsp;smotePercentage:&nbsp;A&nbsp;set&nbsp;SMOTE&nbsp;percentage,&nbsp;otherwise&nbsp;just&nbsp;uses&nbsp;the&nbsp;class&nbsp;Attribute<br>
+&nbsp;&nbsp;&nbsp;&nbsp;underSamplePercentage:&nbsp;see&nbsp;above<br>
+&nbsp;&nbsp;&nbsp;&nbsp;adaSyn:&nbsp;Should&nbsp;the&nbsp;oversampling&nbsp;be&nbsp;done&nbsp;on&nbsp;using&nbsp;the&nbsp;AdaSyn&nbsp;alg?<br>
+&nbsp;&nbsp;&nbsp;&nbsp;adaSynBeta:&nbsp;If&nbsp;adaSyn&nbsp;alg&nbsp;is&nbsp;to&nbsp;be&nbsp;done,&nbsp;set&nbsp;the&nbsp;beta&nbsp;parameter.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:&nbsp;A&nbsp;set&nbsp;of&nbsp;scores&nbsp;from&nbsp;the&nbsp;cross&nbsp;validation</tt></dd></dl>
+
+<dl><dt><a name="smoteTransform-fit"><strong>fit</strong></a>(self, data, labels)</dt><dd><tt>Fits&nbsp;the&nbsp;minority&nbsp;data&nbsp;to&nbsp;a&nbsp;knn&nbsp;classifier&nbsp;from&nbsp;a&nbsp;class<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;examples&nbsp;with&nbsp;all&nbsp;their&nbsp;features<br>
+&nbsp;&nbsp;&nbsp;&nbsp;labels:&nbsp;classlabels&nbsp;for&nbsp;all&nbsp;corresponding&nbsp;examples.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:&nbsp;a&nbsp;<a href="#smoteTransform">smoteTransform</a>&nbsp;object&nbsp;with&nbsp;a&nbsp;fitted&nbsp;data&nbsp;model.</tt></dd></dl>
+
+<dl><dt><a name="smoteTransform-getProcessedData"><strong>getProcessedData</strong></a>(self, data, labels, underSamplePercentage<font color="#909090">=None</font>, oversample<font color="#909090">=False</font>, smotePercentage<font color="#909090">=None</font>)</dt><dd><tt>Conveinence&nbsp;method.&nbsp;From&nbsp;a&nbsp;set&nbsp;of&nbsp;smote&nbsp;parameters&nbsp;and&nbsp;a&nbsp;given&nbsp;dataset&nbsp;with&nbsp;corresponding&nbsp;labels,&nbsp;will&nbsp;return<br>
+a&nbsp;new&nbsp;data&nbsp;set&nbsp;which&nbsp;has&nbsp;had&nbsp;its&nbsp;majority&nbsp;class&nbsp;undersampled&nbsp;(optional)&nbsp;and&nbsp;its&nbsp;minority&nbsp;class&nbsp;oversampled&nbsp;(optional).<br>
+The&nbsp;undersample&nbsp;and&nbsp;smote&nbsp;percentages&nbsp;can&nbsp;be&nbsp;set&nbsp;to&nbsp;different&nbsp;values&nbsp;from&nbsp;the&nbsp;original&nbsp;class&nbsp;variables.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;vadata:&nbsp;validation&nbsp;set&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;vaLabel:&nbsp;Corresponding&nbsp;labels&nbsp;for&nbsp;the&nbsp;validation&nbsp;set&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;model:&nbsp;The&nbsp;model&nbsp;(which&nbsp;should&nbsp;already&nbsp;be&nbsp;trained&nbsp;with&nbsp;training&nbsp;data)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:&nbsp;A&nbsp;dataset&nbsp;consisting&nbsp;of&nbsp;an&nbsp;oversampled&nbsp;minority&nbsp;class&nbsp;and&nbsp;an&nbsp;undersampled&nbsp;majority&nbsp;class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;as&nbsp;a&nbsp;tuple&nbsp;(data,&nbsp;labels)</tt></dd></dl>
+
+<dl><dt><a name="smoteTransform-score"><strong>score</strong></a>(self, vaData, vaLabel, model)</dt><dd><tt>Returns&nbsp;the&nbsp;recall&nbsp;and&nbsp;fallout&nbsp;score&nbsp;given&nbsp;the&nbsp;data,&nbsp;its&nbsp;corresponding&nbsp;labels&nbsp;and&nbsp;the&nbsp;model&nbsp;itself<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;vadata:&nbsp;validation&nbsp;data&nbsp;examples&nbsp;with&nbsp;all&nbsp;their&nbsp;features<br>
+&nbsp;&nbsp;&nbsp;&nbsp;valabels:&nbsp;classlabels&nbsp;for&nbsp;all&nbsp;corresponding&nbsp;validation&nbsp;data&nbsp;examples.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;model:&nbsp;The&nbsp;model&nbsp;(which&nbsp;should&nbsp;already&nbsp;be&nbsp;trained&nbsp;with&nbsp;training&nbsp;data)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:&nbsp;The&nbsp;recall&nbsp;and&nbsp;fallout&nbsp;score&nbsp;as&nbsp;a&nbsp;tuple.</tt></dd></dl>
+
+<dl><dt><a name="smoteTransform-transform"><strong>transform</strong></a>(self, adaSyn<font color="#909090">=False</font>, g<font color="#909090">=None</font>)</dt><dd><tt>Generates&nbsp;synthetic&nbsp;samples&nbsp;according&nbsp;to&nbsp;the&nbsp;SMOTE&nbsp;algorithm<br>
+&nbsp;<br>
+returns:&nbsp;Synthetic&nbsp;data&nbsp;points&nbsp;with&nbsp;their&nbsp;requisite&nbsp;minority&nbsp;class&nbsp;label&nbsp;as&nbsp;a&nbsp;tuple&nbsp;(data,&nbsp;labels).</tt></dd></dl>
+
+<dl><dt><a name="smoteTransform-underSample"><strong>underSample</strong></a>(self, data, labels)</dt><dd><tt>Undersamples&nbsp;the&nbsp;majority&nbsp;class&nbsp;in&nbsp;an&nbsp;imbalanced&nbsp;dataset.<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;examples&nbsp;with&nbsp;all&nbsp;their&nbsp;features<br>
+&nbsp;&nbsp;&nbsp;&nbsp;labels:&nbsp;classlabels&nbsp;for&nbsp;all&nbsp;corresponding&nbsp;examples.<br>
+&nbsp;<br>
+Returns:&nbsp;a&nbsp;dataset&nbsp;with&nbsp;a&nbsp;set&nbsp;quantity&nbsp;of&nbsp;the&nbsp;majority&nbsp;class&nbsp;removed&nbsp;(undersampled)&nbsp;as&nbsp;a&nbsp;tuple&nbsp;of&nbsp;(data,&nbsp;labels).</tt></dd></dl>
+
+<dl><dt><a name="smoteTransform-undersampleValidate"><strong>undersampleValidate</strong></a>(self, data, labels, toStandardise<font color="#909090">=False</font>, toShuffle<font color="#909090">=False</font>, kfolds<font color="#909090">=10</font>)</dt><dd><tt>Generates&nbsp;data-points&nbsp;(fp&nbsp;and&nbsp;tp)&nbsp;for&nbsp;generating&nbsp;a&nbsp;ROC&nbsp;curve&nbsp;through&nbsp;oversampling&nbsp;and&nbsp;undersampling&nbsp;of&nbsp;datasets<br>
+See&nbsp;the&nbsp;original&nbsp;SMOTE&nbsp;paper&nbsp;for&nbsp;more&nbsp;details.&nbsp;All&nbsp;datapoints&nbsp;are&nbsp;the&nbsp;product&nbsp;of&nbsp;a&nbsp;10-fold&nbsp;cross-validation<br>
+Original&nbsp;paper&nbsp;uses&nbsp;a&nbsp;C4.5&nbsp;tree&nbsp;classifier.&nbsp;As&nbsp;we're&nbsp;using&nbsp;the&nbsp;scikit-learn&nbsp;library,&nbsp;we're&nbsp;using&nbsp;the&nbsp;CART&nbsp;algorithm<br>
+instead,&nbsp;which&nbsp;is&nbsp;closely&nbsp;related.<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;is&nbsp;similar&nbsp;to&nbsp;the&nbsp;validate&nbsp;method,&nbsp;but&nbsp;does&nbsp;not&nbsp;do&nbsp;any&nbsp;SMOTE&nbsp;oversampling.&nbsp;This&nbsp;is&nbsp;used&nbsp;as&nbsp;a&nbsp;comparison<br>
+between&nbsp;only&nbsp;undersampling,&nbsp;and&nbsp;a&nbsp;combination&nbsp;of&nbsp;over-&nbsp;and&nbsp;under-sampling.<br>
+&nbsp;<br>
+The&nbsp;undersampling&nbsp;percentages&nbsp;are&nbsp;as&nbsp;follows:&nbsp;10,&nbsp;15,&nbsp;25,&nbsp;50,&nbsp;75,&nbsp;100,&nbsp;125,&nbsp;150,&nbsp;175,&nbsp;200,&nbsp;300,&nbsp;400,&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;500,&nbsp;600,&nbsp;700,&nbsp;800,&nbsp;1000,&nbsp;2000<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+The&nbsp;AUC&nbsp;is&nbsp;calculated&nbsp;and&nbsp;a&nbsp;csv&nbsp;file&nbsp;is&nbsp;saved&nbsp;corresponding&nbsp;to:<br>
+undersample%,&nbsp;mean&nbsp;recall,&nbsp;mean&nbsp;fallout,&nbsp;95%&nbsp;confidence&nbsp;(recall),&nbsp;95%&nbsp;confidence&nbsp;(fallout)<br>
+This&nbsp;file&nbsp;is&nbsp;saved&nbsp;as&nbsp;undersampleOnlyauc=[AUC]_.csv<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;examples&nbsp;with&nbsp;all&nbsp;their&nbsp;features<br>
+&nbsp;&nbsp;&nbsp;&nbsp;labels:&nbsp;classlabels&nbsp;for&nbsp;all&nbsp;corresponding&nbsp;examples.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;toStandardise:&nbsp;whether&nbsp;the&nbsp;datasets&nbsp;should&nbsp;be&nbsp;standardised&nbsp;(0&nbsp;mean&nbsp;with&nbsp;unit&nbsp;variance)&nbsp;before&nbsp;fitting.<br>
+&nbsp;<br>
+Returns:&nbsp;The&nbsp;auc&nbsp;from&nbsp;the&nbsp;resulting&nbsp;roc&nbsp;curve<br>
+&gt;&gt;&gt;&nbsp;csvFileName&nbsp;=&nbsp;'./datasets/phoneme.csv'<br>
+&gt;&gt;&gt;&nbsp;dataSet&nbsp;=&nbsp;numpy.genfromtxt(csvFileName,&nbsp;dtype=float,&nbsp;delimiter=",")<br>
+&gt;&gt;&gt;&nbsp;data,&nbsp;labels&nbsp;=&nbsp;samplerNoID(dataSet)<br>
+&gt;&gt;&gt;&nbsp;smote&nbsp;=&nbsp;<a href="#smoteTransform">smoteTransform</a>(randomState&nbsp;=&nbsp;255)<br>
+&gt;&gt;&gt;&nbsp;smote.<a href="#smoteTransform-undersampleValidate">undersampleValidate</a>(data,&nbsp;labels,&nbsp;toStandardise=False)<br>
+[[&nbsp;0.79270129&nbsp;&nbsp;0.08599851]<br>
+&nbsp;[&nbsp;0.78681043&nbsp;&nbsp;0.09883799]<br>
+&nbsp;[&nbsp;0.79016826&nbsp;&nbsp;0.09998522]<br>
+&nbsp;[&nbsp;0.80423374&nbsp;&nbsp;0.11730889]<br>
+&nbsp;[&nbsp;0.83255765&nbsp;&nbsp;0.1435521&nbsp;]<br>
+&nbsp;[&nbsp;0.87347219&nbsp;&nbsp;0.21324935]<br>
+&nbsp;[&nbsp;0.85003933&nbsp;&nbsp;0.15736304]<br>
+&nbsp;[&nbsp;0.85440382&nbsp;&nbsp;0.19037023]<br>
+&nbsp;[&nbsp;0.86097302&nbsp;&nbsp;0.20513769]<br>
+&nbsp;[&nbsp;0.86576104&nbsp;&nbsp;0.217502&nbsp;&nbsp;]<br>
+&nbsp;[&nbsp;0.89098296&nbsp;&nbsp;0.24009012]<br>
+&nbsp;[&nbsp;0.92390897&nbsp;&nbsp;0.28186043]<br>
+&nbsp;[&nbsp;0.93745969&nbsp;&nbsp;0.31273222]<br>
+&nbsp;[&nbsp;0.94237268&nbsp;&nbsp;0.34739837]<br>
+&nbsp;[&nbsp;0.9418215&nbsp;&nbsp;&nbsp;0.3721151&nbsp;]<br>
+&nbsp;[&nbsp;0.94033133&nbsp;&nbsp;0.39831616]<br>
+&nbsp;[&nbsp;0.9537111&nbsp;&nbsp;&nbsp;0.41125992]<br>
+&nbsp;[&nbsp;0.96623317&nbsp;&nbsp;0.44349758]<br>
+&nbsp;[&nbsp;0.98032728&nbsp;&nbsp;0.53586075]]<br>
+0.869156962912<br>
+0.86915696291175371</tt></dd></dl>
+
+<dl><dt><a name="smoteTransform-validate"><strong>validate</strong></a>(self, data, labels, toStandardise<font color="#909090">=False</font>, smotePercentages<font color="#909090">=None</font>, toShuffle<font color="#909090">=False</font>, kfolds<font color="#909090">=10</font>)</dt><dd><tt>Generates&nbsp;data-points&nbsp;(fp&nbsp;and&nbsp;tp)&nbsp;for&nbsp;generating&nbsp;a&nbsp;ROC&nbsp;curve&nbsp;through&nbsp;oversampling&nbsp;and&nbsp;undersampling&nbsp;of&nbsp;datasets<br>
+See&nbsp;the&nbsp;original&nbsp;SMOTE&nbsp;paper&nbsp;for&nbsp;more&nbsp;details.&nbsp;All&nbsp;datapoints&nbsp;are&nbsp;the&nbsp;product&nbsp;of&nbsp;a&nbsp;10-fold&nbsp;cross-validation.<br>
+Original&nbsp;paper&nbsp;uses&nbsp;a&nbsp;C4.5&nbsp;tree&nbsp;classifier.&nbsp;As&nbsp;we're&nbsp;using&nbsp;the&nbsp;scikit-learn&nbsp;library,&nbsp;we're&nbsp;using&nbsp;the&nbsp;CART&nbsp;algorithm<br>
+instead,&nbsp;which&nbsp;is&nbsp;closely&nbsp;related.<br>
+&nbsp;<br>
+The&nbsp;smote&nbsp;percentages&nbsp;are&nbsp;as&nbsp;follows:&nbsp;100,&nbsp;200,&nbsp;300,&nbsp;400,&nbsp;500<br>
+The&nbsp;undersampling&nbsp;percentages&nbsp;are&nbsp;as&nbsp;follows:&nbsp;10,&nbsp;15,&nbsp;25,&nbsp;50,&nbsp;75,&nbsp;100,&nbsp;125,&nbsp;150,&nbsp;175,&nbsp;200,&nbsp;300,&nbsp;400,&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;500,&nbsp;600,&nbsp;700,&nbsp;800,&nbsp;1000,&nbsp;2000<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+For&nbsp;each&nbsp;smote&nbsp;percentage,&nbsp;the&nbsp;AUC&nbsp;is&nbsp;calculated&nbsp;and&nbsp;a&nbsp;csv&nbsp;file&nbsp;is&nbsp;saved&nbsp;corresponding&nbsp;to:<br>
+smote%,&nbsp;undersample%,&nbsp;mean&nbsp;recall,&nbsp;mean&nbsp;fallout,&nbsp;95%&nbsp;confidence&nbsp;(recall),&nbsp;95%&nbsp;confidence&nbsp;(fallout)<br>
+This&nbsp;file&nbsp;is&nbsp;saved&nbsp;as&nbsp;sample[smote%]auc=[AUC]_.csv<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;examples&nbsp;with&nbsp;all&nbsp;their&nbsp;features<br>
+&nbsp;&nbsp;&nbsp;&nbsp;labels:&nbsp;classlabels&nbsp;for&nbsp;all&nbsp;corresponding&nbsp;examples.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;toStandardise:&nbsp;whether&nbsp;the&nbsp;datasets&nbsp;should&nbsp;be&nbsp;standardised&nbsp;(0&nbsp;mean&nbsp;with&nbsp;unit&nbsp;variance)&nbsp;before&nbsp;fitting.<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;csvFileName&nbsp;=&nbsp;'./datasets/phoneme.csv'<br>
+&gt;&gt;&gt;&nbsp;dataSet&nbsp;=&nbsp;numpy.genfromtxt(csvFileName,&nbsp;dtype=float,&nbsp;delimiter=",")<br>
+&gt;&gt;&gt;&nbsp;data,&nbsp;labels&nbsp;=&nbsp;samplerNoID(dataSet)<br>
+&gt;&gt;&gt;&nbsp;smote&nbsp;=&nbsp;<a href="#smoteTransform">smoteTransform</a>(randomState&nbsp;=&nbsp;255)<br>
+&gt;&gt;&gt;&nbsp;smote.<a href="#smoteTransform-validate">validate</a>(data,&nbsp;labels,&nbsp;toStandardise=False,&nbsp;smotePercentages&nbsp;=&nbsp;[100])<br>
+[[&nbsp;&nbsp;0.00000000e+00&nbsp;&nbsp;&nbsp;0.00000000e+00&nbsp;&nbsp;&nbsp;7.92701288e-01&nbsp;&nbsp;&nbsp;8.59985133e-02<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.16956217e-02&nbsp;&nbsp;&nbsp;7.65178918e-03]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;1.00000000e+01&nbsp;&nbsp;&nbsp;8.21095371e-01&nbsp;&nbsp;&nbsp;1.10608309e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.87150305e-02&nbsp;&nbsp;&nbsp;8.52243578e-03]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;1.50000000e+01&nbsp;&nbsp;&nbsp;8.28010859e-01&nbsp;&nbsp;&nbsp;1.14282258e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.68657997e-02&nbsp;&nbsp;&nbsp;5.16455238e-03]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;2.50000000e+01&nbsp;&nbsp;&nbsp;8.30418682e-01&nbsp;&nbsp;&nbsp;1.17519395e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.54211142e-02&nbsp;&nbsp;&nbsp;6.41673418e-03]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;5.00000000e+01&nbsp;&nbsp;&nbsp;8.60524004e-01&nbsp;&nbsp;&nbsp;1.63941404e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.01031660e-02&nbsp;&nbsp;&nbsp;1.11970736e-02]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;7.50000000e+01&nbsp;&nbsp;&nbsp;8.93129126e-01&nbsp;&nbsp;&nbsp;2.34031882e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.04015059e-02&nbsp;&nbsp;&nbsp;1.35582703e-02]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;8.60447911e-01&nbsp;&nbsp;&nbsp;1.83000938e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.53169479e-02&nbsp;&nbsp;&nbsp;1.40703712e-02]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;1.25000000e+02&nbsp;&nbsp;&nbsp;8.73333354e-01&nbsp;&nbsp;&nbsp;2.03270958e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.56129049e-02&nbsp;&nbsp;&nbsp;1.00728793e-02]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;1.50000000e+02&nbsp;&nbsp;&nbsp;8.80693877e-01&nbsp;&nbsp;&nbsp;2.24381154e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.26417483e-02&nbsp;&nbsp;&nbsp;1.05386373e-02]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;1.75000000e+02&nbsp;&nbsp;&nbsp;9.09395043e-01&nbsp;&nbsp;&nbsp;2.35797524e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.56761029e-02&nbsp;&nbsp;&nbsp;1.22288626e-02]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;2.00000000e+02&nbsp;&nbsp;&nbsp;9.05789727e-01&nbsp;&nbsp;&nbsp;2.57232198e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.55591484e-02&nbsp;&nbsp;&nbsp;1.19576636e-02]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;3.00000000e+02&nbsp;&nbsp;&nbsp;9.26321301e-01&nbsp;&nbsp;&nbsp;2.99820813e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.26413492e-02&nbsp;&nbsp;&nbsp;1.71827786e-02]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;4.00000000e+02&nbsp;&nbsp;&nbsp;9.44636370e-01&nbsp;&nbsp;&nbsp;3.36573143e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.40436316e-02&nbsp;&nbsp;&nbsp;2.37434116e-02]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;5.00000000e+02&nbsp;&nbsp;&nbsp;9.53258513e-01&nbsp;&nbsp;&nbsp;3.63518690e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.44544332e-02&nbsp;&nbsp;&nbsp;1.59074368e-02]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;6.00000000e+02&nbsp;&nbsp;&nbsp;9.53837342e-01&nbsp;&nbsp;&nbsp;3.93044650e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.42175574e-02&nbsp;&nbsp;&nbsp;1.75316626e-02]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;7.00000000e+02&nbsp;&nbsp;&nbsp;9.55234648e-01&nbsp;&nbsp;&nbsp;4.06388475e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;7.66580273e-03&nbsp;&nbsp;&nbsp;1.77307562e-02]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;8.00000000e+02&nbsp;&nbsp;&nbsp;9.62584962e-01&nbsp;&nbsp;&nbsp;4.22494839e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.33841862e-02&nbsp;&nbsp;&nbsp;2.26837287e-02]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;1.00000000e+03&nbsp;&nbsp;&nbsp;9.61396448e-01&nbsp;&nbsp;&nbsp;4.49116790e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.05568599e-02&nbsp;&nbsp;&nbsp;1.07949625e-02]<br>
+&nbsp;[&nbsp;&nbsp;1.00000000e+02&nbsp;&nbsp;&nbsp;2.00000000e+03&nbsp;&nbsp;&nbsp;9.78607059e-01&nbsp;&nbsp;&nbsp;5.64731915e-01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;9.01519281e-03&nbsp;&nbsp;&nbsp;2.96922772e-02]]<br>
+0.87058040141<br>
+[0.87058040140989978]</tt></dd></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-genDataSets"><strong>genDataSets</strong></a>(data, labels, filename)</dt><dd><tt>#Generates&nbsp;data&nbsp;sets&nbsp;from&nbsp;re-sampling&nbsp;of&nbsp;a&nbsp;dataset&nbsp;into&nbsp;a&nbsp;CSV&nbsp;file,&nbsp;so&nbsp;that&nbsp;it&nbsp;can&nbsp;be&nbsp;displayed<br>
+#(such&nbsp;as&nbsp;by&nbsp;showtask()&nbsp;in&nbsp;mlotools)</tt></dd></dl>
+ <dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><tt>#Testing&nbsp;the&nbsp;smote&nbsp;function&nbsp;200-500%<br>
+#&nbsp;https://archive.ics.uci.edu/ml/datasets/Pima+Indians+Diabetes&nbsp;Pima&nbsp;dataset<br>
+#&nbsp;<a href="http://sci2s.ugr.es/keel/dataset.php?cod=105">http://sci2s.ugr.es/keel/dataset.php?cod=105</a>&nbsp;Phoneme&nbsp;dataset</tt></dd></dl>
+ <dl><dt><a name="-testPopulate"><strong>testPopulate</strong></a>()</dt><dd><tt>#Testing&nbsp;of&nbsp;the&nbsp;<a href="#smoteTransform">smoteTransform</a>&nbsp;class<br>
+#Generates&nbsp;synthetic&nbsp;samples&nbsp;for&nbsp;further&nbsp;inspection.</tt></dd></dl>
+ <dl><dt><a name="-testUndersample"><strong>testUndersample</strong></a>()</dt><dd><tt>#Tests&nbsp;the&nbsp;random&nbsp;undersampling&nbsp;of&nbsp;the&nbsp;majority&nbsp;class&nbsp;in&nbsp;the&nbsp;phoneme&nbsp;dataset.<br>
+#Generates&nbsp;synthetic&nbsp;samples&nbsp;for&nbsp;further&nbsp;inspection.</tt></dd></dl>
+</td></tr></table>
+</body></html>

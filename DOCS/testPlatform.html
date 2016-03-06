@@ -1,0 +1,96 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module testPlatform</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>testPlatform</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/chris/Documents/Manchester_Masters/MachineLearning/9625193-PHANG-code/testPlatform.py">/home/chris/Documents/Manchester_Masters/MachineLearning/9625193-PHANG-code/testPlatform.py</a></font></td></tr></table>
+    <p><tt>This&nbsp;module&nbsp;implements&nbsp;tests&nbsp;a&nbsp;dataset&nbsp;against&nbsp;a&nbsp;battery&nbsp;of&nbsp;classifiers:<br>
+1)Random&nbsp;Forest,&nbsp;2),&nbsp;Gaussian&nbsp;SVM,&nbsp;3)&nbsp;knn,&nbsp;4)&nbsp;CART,&nbsp;5)&nbsp;Naive&nbsp;bayes&nbsp;6)&nbsp;Logistic&nbsp;regression<br>
+7)&nbsp;Linear&nbsp;SVM&nbsp;8)&nbsp;Adaboost&nbsp;9)&nbsp;Gradient&nbsp;Tree&nbsp;boost</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="sklearn.cross_validation.html">sklearn.cross_validation</a><br>
+<a href="sklearn.cross_validation.html">sklearn.cross_validation</a><br>
+<a href="sklearn.ensemble.html">sklearn.ensemble</a><br>
+</td><td width="25%" valign=top><a href="sklearn.linear_model.html">sklearn.linear_model</a><br>
+<a href="math.html">math</a><br>
+<a href="sklearn.metrics.html">sklearn.metrics</a><br>
+</td><td width="25%" valign=top><a href="sklearn.neighbors.html">sklearn.neighbors</a><br>
+<a href="numpy.html">numpy</a><br>
+<a href="matplotlib.pyplot.html">matplotlib.pyplot</a><br>
+</td><td width="25%" valign=top><a href="scipy.html">scipy</a><br>
+<a href="sklearn.svm.html">sklearn.svm</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="testPlatform.html#testPlatform">testPlatform</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="testPlatform">class <strong>testPlatform</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Tests&nbsp;a&nbsp;dataset&nbsp;against&nbsp;a&nbsp;batttery&nbsp;of&nbsp;classifiers.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;smotePercentage:&nbsp;the&nbsp;oversampling&nbsp;SMOTE&nbsp;percentage.&nbsp;Default&nbsp;=&nbsp;200<br>
+&nbsp;&nbsp;&nbsp;&nbsp;underSamplePercentage:&nbsp;How&nbsp;much&nbsp;to&nbsp;undersample&nbsp;the&nbsp;majority&nbsp;class.&nbsp;Default&nbsp;=&nbsp;0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;adaSynBeta:&nbsp;If&nbsp;using&nbsp;the&nbsp;adaSyn&nbsp;alg,&nbsp;what&nbsp;is&nbsp;the&nbsp;beta&nbsp;parameter?<br>
+&nbsp;&nbsp;&nbsp;&nbsp;standardiseData:&nbsp;Determines&nbsp;if&nbsp;the&nbsp;data&nbsp;should&nbsp;be&nbsp;normalised.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;toSmote:&nbsp;Determines&nbsp;if&nbsp;SMOTE&nbsp;oversampling&nbsp;should&nbsp;be&nbsp;employed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;toAdaSyn:&nbsp;Determines&nbsp;if&nbsp;AdaSyn&nbsp;oversampling&nbsp;should&nbsp;be&nbsp;employed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;randomState:&nbsp;Sets&nbsp;a&nbsp;seed&nbsp;number&nbsp;if&nbsp;reproducible&nbsp;results&nbsp;are&nbsp;required&nbsp;(i.e.&nbsp;for&nbsp;testing).<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="testPlatform-__init__"><strong>__init__</strong></a>(self, underSamplePercentage<font color="#909090">=0</font>, smotePercentage<font color="#909090">=200</font>, standardiseData<font color="#909090">=True</font>, toSmote<font color="#909090">=True</font>, randomState<font color="#909090">=None</font>, toAdaSyn<font color="#909090">=False</font>, adaSynBeta<font color="#909090">=1</font>)</dt></dl>
+
+<dl><dt><a name="testPlatform-crossValidate"><strong>crossValidate</strong></a>(self, data, labels, model, cvIterator)</dt><dd><tt>Cross&nbsp;validation&nbsp;method<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;The&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;labels:&nbsp;The&nbsp;labels<br>
+&nbsp;&nbsp;&nbsp;&nbsp;model:&nbsp;The&nbsp;model&nbsp;to&nbsp;be&nbsp;trained.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cvIterator:&nbsp;The&nbsp;CV&nbsp;iterator&nbsp;to&nbsp;obtain&nbsp;the&nbsp;folds.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:&nbsp;metrics&nbsp;for&nbsp;classifier&nbsp;performance&nbsp;after&nbsp;CV.</tt></dd></dl>
+
+<dl><dt><a name="testPlatform-preprocessing"><strong>preprocessing</strong></a>(self, data, labels)</dt><dd><tt>Depending&nbsp;on&nbsp;the&nbsp;class&nbsp;attributes,&nbsp;will&nbsp;normalise&nbsp;data&nbsp;and/or&nbsp;oversample/undersample&nbsp;the&nbsp;dataset<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;the&nbsp;data&nbsp;from&nbsp;the&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;labels:&nbsp;The&nbsp;class&nbsp;labels<br>
+&nbsp;<br>
+returns:&nbsp;the&nbsp;processed&nbsp;data.</tt></dd></dl>
+
+<dl><dt><a name="testPlatform-validate"><strong>validate</strong></a>(self, dataSet, numfolds<font color="#909090">=5</font>, hasIds<font color="#909090">=True</font>)</dt><dd><tt>Method&nbsp;for&nbsp;testing&nbsp;a&nbsp;dataset&nbsp;against&nbsp;a&nbsp;variety&nbsp;of&nbsp;classifiers.<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dataSet:&nbsp;The&nbsp;dataset&nbsp;in&nbsp;question<br>
+&nbsp;&nbsp;&nbsp;&nbsp;numfolds:&nbsp;The&nbsp;number&nbsp;of&nbsp;folds&nbsp;in&nbsp;the&nbsp;CV.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;hasIds:&nbsp;Has&nbsp;the&nbsp;dataset&nbsp;got&nbsp;IDs&nbsp;in&nbsp;the&nbsp;first&nbsp;column?&nbsp;If&nbsp;so&nbsp;these&nbsp;are&nbsp;to&nbsp;be&nbsp;removed.&nbsp;Default=True</tt></dd></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><tt>#Used&nbsp;to&nbsp;initialise&nbsp;the&nbsp;test&nbsp;platform.&nbsp;Simply&nbsp;loads&nbsp;a&nbsp;dataset&nbsp;from&nbsp;a&nbsp;CSV&nbsp;file&nbsp;and&nbsp;the&nbsp;<a href="#testPlatform">testPlatform</a>&nbsp;class&nbsp;does&nbsp;the&nbsp;rest.</tt></dd></dl>
+</td></tr></table>
+</body></html>
