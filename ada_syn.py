@@ -6,7 +6,7 @@ Note that this implementation is only suitable for datasets which have binary cl
 import numpy
 from sklearn import neighbors
 from dataParsing import *
-from smoteTransform import smoteTransform
+from smote_transform import smoteTransform
 from sklearn import cross_validation
 
 class adaSyn(smoteTransform):
@@ -117,7 +117,7 @@ class adaSyn(smoteTransform):
         totData, totLabels = combineTestSets(underSampledData, underSampledLabels, synData, synLabels)
         return totData, totLabels
     
-    def validate(self, data, labels, adaSynBeta = None, toStandardise=False, toShuffle=False, kfolds=10):
+    def validate(self, data, labels, adaSynBeta = None, toStandardise=False, toShuffle=False, saveFile=False, kfolds=10):
         """See documenation for validate() in smoteTransform.py.  Performs exact same methodology except we
            use differing beta parameters as opposed to smote.
 
@@ -164,8 +164,8 @@ class adaSyn(smoteTransform):
             
             auc = calculateAUC(scores[:,2:4])
             #print(scores)
-            numpy.savetxt('sample' + str(ovsample) + 'auc=' + str(auc)[:5] + '_.csv', scores, delimiter = ',')
-            print(auc)
+            if saveFile:
+                numpy.savetxt('sample' + str(ovsample) + 'auc=' + str(auc)[:5] + '_.csv', scores, delimiter = ',')
             aucs.append(auc)
         
         return aucs
@@ -177,7 +177,7 @@ def main():
     data, labels = samplerNoID(dataSet)
     #processedData, processedLabels = adaSyn().getProcessedData(data, labels, underSamplePercentage=50, adaSynBeta=0.5)
     #saveDataSets(processedData, processedLabels, "CombinedPlayerSetAda")
-    adaSyn().validate(data, labels, toStandardise=False, toShuffle=True, kfolds=10)
+    adaSyn(randomState=255).validate(data, labels, adaSynBeta=[0.5], toStandardise=False, toShuffle=True, kfolds=10)
     
 if __name__ == '__main__':
     #import doctest

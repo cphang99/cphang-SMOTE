@@ -74,7 +74,7 @@ class smoteTransform:
         
         return self
     
-    def transform(self, adaSyn=False, g = None):
+    def transform(self, adaSyn=False, saveSynPoints = False, g = None):
         """Generates synthetic samples according to the SMOTE algorithm
 
         returns: Synthetic data points with their requisite minority class label as a tuple (data, labels).
@@ -140,8 +140,8 @@ class smoteTransform:
             
             index += 1
         
-        
-        numpy.savetxt('synpoints.csv', numpy.c_[newPoints], delimiter= ',')
+        if saveSynPoints:
+            numpy.savetxt('synpoints.csv', numpy.c_[newPoints], delimiter= ',')
         
         newPointsNPArray = numpy.asarray(newPoints)
         newId, newData, newLabels = sampler(newPointsNPArray)
@@ -180,7 +180,7 @@ class smoteTransform:
         return totData, totLabels
     
 
-    def validate(self, data, labels, toStandardise=False, smotePercentages = None, toShuffle=False, kfolds=10):
+    def validate(self, data, labels, toStandardise=False, smotePercentages = None, toShuffle=False, saveFile = False, kfolds=10):
         """Generates data-points (fp and tp) for generating a ROC curve through oversampling and undersampling of datasets
         See the original SMOTE paper for more details. All datapoints are the product of a 10-fold cross-validation.
         Original paper uses a C4.5 tree classifier. As we're using the scikit-learn library, we're using the CART algorithm
@@ -197,52 +197,6 @@ class smoteTransform:
             data: examples with all their features
             labels: classlabels for all corresponding examples.
             toStandardise: whether the datasets should be standardised (0 mean with unit variance) before fitting.
-        
-        >>> csvFileName = './datasets/phoneme.csv'
-        >>> dataSet = numpy.genfromtxt(csvFileName, dtype=float, delimiter=",")
-        >>> data, labels = samplerNoID(dataSet)
-        >>> smote = smoteTransform(randomState = 255)
-        >>> smote.validate(data, labels, toStandardise=False, smotePercentages = [100])
-        [[  0.00000000e+00   0.00000000e+00   7.92701288e-01   8.59985133e-02
-            2.16956217e-02   7.65178918e-03]
-         [  1.00000000e+02   1.00000000e+01   8.21095371e-01   1.10608309e-01
-            1.87150305e-02   8.52243578e-03]
-         [  1.00000000e+02   1.50000000e+01   8.28010859e-01   1.14282258e-01
-            1.68657997e-02   5.16455238e-03]
-         [  1.00000000e+02   2.50000000e+01   8.30418682e-01   1.17519395e-01
-            2.54211142e-02   6.41673418e-03]
-         [  1.00000000e+02   5.00000000e+01   8.60524004e-01   1.63941404e-01
-            2.01031660e-02   1.11970736e-02]
-         [  1.00000000e+02   7.50000000e+01   8.93129126e-01   2.34031882e-01
-            2.04015059e-02   1.35582703e-02]
-         [  1.00000000e+02   1.00000000e+02   8.60447911e-01   1.83000938e-01
-            1.53169479e-02   1.40703712e-02]
-         [  1.00000000e+02   1.25000000e+02   8.73333354e-01   2.03270958e-01
-            1.56129049e-02   1.00728793e-02]
-         [  1.00000000e+02   1.50000000e+02   8.80693877e-01   2.24381154e-01
-            1.26417483e-02   1.05386373e-02]
-         [  1.00000000e+02   1.75000000e+02   9.09395043e-01   2.35797524e-01
-            1.56761029e-02   1.22288626e-02]
-         [  1.00000000e+02   2.00000000e+02   9.05789727e-01   2.57232198e-01
-            1.55591484e-02   1.19576636e-02]
-         [  1.00000000e+02   3.00000000e+02   9.26321301e-01   2.99820813e-01
-            1.26413492e-02   1.71827786e-02]
-         [  1.00000000e+02   4.00000000e+02   9.44636370e-01   3.36573143e-01
-            1.40436316e-02   2.37434116e-02]
-         [  1.00000000e+02   5.00000000e+02   9.53258513e-01   3.63518690e-01
-            1.44544332e-02   1.59074368e-02]
-         [  1.00000000e+02   6.00000000e+02   9.53837342e-01   3.93044650e-01
-            1.42175574e-02   1.75316626e-02]
-         [  1.00000000e+02   7.00000000e+02   9.55234648e-01   4.06388475e-01
-            7.66580273e-03   1.77307562e-02]
-         [  1.00000000e+02   8.00000000e+02   9.62584962e-01   4.22494839e-01
-            1.33841862e-02   2.26837287e-02]
-         [  1.00000000e+02   1.00000000e+03   9.61396448e-01   4.49116790e-01
-            1.05568599e-02   1.07949625e-02]
-         [  1.00000000e+02   2.00000000e+03   9.78607059e-01   5.64731915e-01
-            9.01519281e-03   2.96922772e-02]]
-        0.87058040141
-        [0.87058040140989978]
         """
         
         #Percentages used in the ROC paper, with 10-fold cross validation
@@ -277,14 +231,13 @@ class smoteTransform:
                       #confidence95(totRecall), confidence95(totfallout))
             
             auc = calculateAUC(scores[:,2:4])
-            print(scores)
-            numpy.savetxt('sample' + str(ovsample) + 'auc=' + str(auc)[:5] + '_.csv', scores, delimiter = ',')
-            print(auc)
+            if saveFile:
+                numpy.savetxt('sample' + str(ovsample) + 'auc=' + str(auc)[:5] + '_.csv', scores, delimiter = ',')
             aucs.append(auc)
         
         return aucs
     
-    def undersampleValidate(self, data, labels, toStandardise=False, toShuffle=False, kfolds=10):
+    def undersampleValidate(self, data, labels, toStandardise=False, toShuffle=False, saveFile = False, kfolds=10):
         """Generates data-points (fp and tp) for generating a ROC curve through oversampling and undersampling of datasets
         See the original SMOTE paper for more details. All datapoints are the product of a 10-fold cross-validation
         Original paper uses a C4.5 tree classifier. As we're using the scikit-learn library, we're using the CART algorithm
@@ -306,33 +259,6 @@ class smoteTransform:
             toStandardise: whether the datasets should be standardised (0 mean with unit variance) before fitting.
         
         Returns: The auc from the resulting roc curve
-        >>> csvFileName = './datasets/phoneme.csv'
-        >>> dataSet = numpy.genfromtxt(csvFileName, dtype=float, delimiter=",")
-        >>> data, labels = samplerNoID(dataSet)
-        >>> smote = smoteTransform(randomState = 255)
-        >>> smote.undersampleValidate(data, labels, toStandardise=False)
-        [[ 0.79270129  0.08599851]
-         [ 0.78681043  0.09883799]
-         [ 0.79016826  0.09998522]
-         [ 0.80423374  0.11730889]
-         [ 0.83255765  0.1435521 ]
-         [ 0.87347219  0.21324935]
-         [ 0.85003933  0.15736304]
-         [ 0.85440382  0.19037023]
-         [ 0.86097302  0.20513769]
-         [ 0.86576104  0.217502  ]
-         [ 0.89098296  0.24009012]
-         [ 0.92390897  0.28186043]
-         [ 0.93745969  0.31273222]
-         [ 0.94237268  0.34739837]
-         [ 0.9418215   0.3721151 ]
-         [ 0.94033133  0.39831616]
-         [ 0.9537111   0.41125992]
-         [ 0.96623317  0.44349758]
-         [ 0.98032728  0.53586075]]
-        0.869156962912
-        0.86915696291175371
-
         """        
         #under sampling percentages used in the SMOTE paper
         underSamplingPercentages = [0, 10, 15, 25, 50, 75, 100, 125, 150, 175, 200, 300, 400, 500, 600, 700, 800, 1000, 2000]
@@ -355,10 +281,10 @@ class smoteTransform:
                 #print(percentage, numpy.mean(totRecall), numpy.mean(totfallout), 
                       #confidence95(totRecall), confidence95(totfallout))
         
-        print(scores[:,1:3])
         auc = calculateAUC(scores[:,1:3])
-        numpy.savetxt('undersampleOnly' + 'auc=' + str(auc)[:5] + '_.csv', scores, delimiter = ',')
-        print(auc)
+        
+        if saveFile:
+            numpy.savetxt('undersampleOnly' + 'auc=' + str(auc)[:5] + '_.csv', scores, delimiter = ',')
         return auc
     
     def score(self, vaData, vaLabel, model):
