@@ -95,7 +95,7 @@ class adaSyn(smoteTransform):
         #len(g)
         #len(data[labels == 1])
         assert len(g) == len(data[labels == 1]), "length of g ({0}) is different from num_minority ({1})".format(len(g), len(data[labels == 1]))
-        return self.transform(adaSyn = True, g=g)
+        return self.transform(numRepeatArray = g)
 
     def getProcessedData(self, data, labels, underSamplePercentage=None, adaSynBeta=None):
         """Conveinence method. From a given dataset with corresponding labels, will return

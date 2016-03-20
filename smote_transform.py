@@ -74,12 +74,16 @@ class smoteTransform:
         
         return self
     
-    def transform(self, adaSyn=False, saveSynPoints = False, g = None):
+    def transform(self, saveSynPoints = False, numRepeatArray= None ):
         """Generates synthetic samples according to the SMOTE algorithm
 
         returns: Synthetic data points with their requisite minority class label as a tuple (data, labels).
 
         """            
+        if numRepeatArray is None:
+            numRepeatArray = [(self.smote // 100) for elem in xrange(0, len(self.minorityExamples))]
+            
+            
         assert(self.minorityData != None and self.minorityLabels != None and self.minorityExamples != None)
         doOnce = False
         newPoints = []
@@ -109,12 +113,9 @@ class smoteTransform:
             #print(numExamples)
             #print(nearestPoints)
             
-            #pick a random point from these nearest points, repeat according to the smote percentage (with floor division)
-            if adaSyn:
-                assert(g != None)
-                numRepeat = g[index]
-            else:
-                numRepeat = self.smote // 100
+            #pick a random point from these nearest points, repeat according to the given numRepeat parameter (depending
+            #on the given oversampling algorithm)
+            numRepeat = numRepeatArray[index]
             for r in xrange(0,numRepeat):
                 random.seed(self.randomState)
                 nrpoint = random.choice(nearestPoints)
@@ -144,8 +145,13 @@ class smoteTransform:
             numpy.savetxt('synpoints.csv', numpy.c_[newPoints], delimiter= ',')
         
         newPointsNPArray = numpy.asarray(newPoints)
-        newId, newData, newLabels = sampler(newPointsNPArray)
-        return newData, newLabels
+        
+        #Ensure that there is something to sample (i.e. new synthetic samples!) otherwise return empty
+        if newPointsNPArray.size > 0:
+            newId, newData, newLabels = sampler(newPointsNPArray)
+            return newData, newLabels
+        else:
+            return None, None
 
 
     def underSample(self, data, labels):
@@ -300,7 +306,7 @@ class smoteTransform:
         vaPreds = model.predict(vaData)
         return mets.recall_score(vaLabel, vaPreds), fallout(vaLabel, vaPreds)
     
-    def getProcessedData(self, data, labels, underSamplePercentage=None, oversample=False, smotePercentage=None):
+    def getProcessedData(self, data, labels, underSamplePercentage=None, smotePercentage=None):
         """Conveinence method. From a set of smote parameters and a given dataset with corresponding labels, will return
         a new data set which has had its majority class undersampled (optional) and its minority class oversampled (optional).
         The undersample and smote percentages can be set to different values from the original class variables.
@@ -316,16 +322,17 @@ class smoteTransform:
         """ 
         if underSamplePercentage is not None:
             self.underSamplePercentage = underSamplePercentage
-        if smotePercentage:
+            data, labels = self.underSample(data, labels)
+        if smotePercentage is not None:
             self.smote = smotePercentage
         
-        underSampledData, underSampledLabels = self.underSample(data, labels)
-        if oversample:
+        
+        #generate synthetic samples and combine them with the original samples
+        if self.smote != 0:
             synData, synLabels = self.fit(data, labels).transform()
-            totData, totLabels = combineTestSets(underSampledData, underSampledLabels, synData, synLabels)
-            return totData, totLabels
-        else:
-            return underSampledData, underSampledLabels
+            data, labels = combineTestSets(data, labels, synData, synLabels)
+        
+        return data, labels
     
     
     def cvTree(self, data, labels, kfold_iterator, 
@@ -366,11 +373,12 @@ class smoteTransform:
             elif noDataChange:
                 totData, totLabels = trData, trLabel
             elif undersampleOnly:
-                totData, totLabels = self.getProcessedData(trData, trLabel, underSamplePercentage=underSamplePercentage)
+                totData, totLabels = self.getProcessedData(trData, trLabel, 
+                                                           underSamplePercentage=underSamplePercentage,
+                                                           smotePercentage = 0)
             elif underAndOversample:
                 totData, totLabels = self.getProcessedData(trData, trLabel,
                                                            underSamplePercentage=underSamplePercentage,
-                                                           oversample= True,
                                                            smotePercentage= smotePercentage)
             elif adaSyn:
                 assert(adaSynBeta != None)
@@ -469,7 +477,7 @@ def testUndersample():
 #(such as by showtask() in mlotools)
 def genDataSets(data, labels, filename):
     smote = smoteTransform(smote=500, underSamplePercentage=75)
-    processedData, processedLabels = smote.getProcessedData(data, labels, oversample=True)
+    processedData, processedLabels = smote.getProcessedData(data, labels)
     saveDataSets(processedData, processedLabels, filename)
     
 
