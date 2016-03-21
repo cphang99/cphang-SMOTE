@@ -6,25 +6,25 @@ Note that this implementation is only suitable for datasets which have binary cl
 import numpy
 from sklearn import neighbors
 from dataParsing import *
-from smote_transform import smoteTransform
+import smote_transform
 from sklearn import cross_validation
 
-class adaSyn(smoteTransform):
+class adaSyn(smote_transform.smoteTransform):
     """Performs the ADASYN transform on unbalanced data sets.
 
     Attributes:
         k: number of nearest neighbors. Default = 5
-        smote: the oversampling SMOTE percentage. Default = 200. This is there as the class is capable of doing SMOTE oversampling as well
-                being a subclass of smoteTransform.
         underSamplePercentage: How much to undersample the majority class. Default = 15 (%)
         minorityLabel: the class of the minority label. Default =1
         randomState: Sets a seed for any random generator functions within the smoteTransform object for testing. 
                         Default = None
         beta: The adaSyn beta parameter.                
     """    
-    def __init__(self, k=5, smote=200, underSamplePercentage = 15, minorityLabel =1, randomState=None, beta=1):
-        smoteTransform.__init__(self, k, smote, underSamplePercentage, minorityLabel, randomState)
-        self.beta = beta
+    def __init__(self, k=5, oversampleParameter=1, underSamplePercentage = 15, minorityLabel =1, randomState=None):
+        smote_transform.smoteTransform.__init__(self, k=k, 
+                                                underSamplePercentage=underSamplePercentage, 
+                                                minorityLabel=minorityLabel, randomState=randomState)
+        self.beta = oversampleParameter
         self.dthreshold = 0.75
         self.densityclf = None
     
@@ -97,78 +97,23 @@ class adaSyn(smoteTransform):
         assert len(g) == len(data[labels == 1]), "length of g ({0}) is different from num_minority ({1})".format(len(g), len(data[labels == 1]))
         return self.transform(numRepeatArray = g)
 
-    def getProcessedData(self, data, labels, underSamplePercentage=None, adaSynBeta=None):
+    def getProcessedData(self, data, labels):
         """Conveinence method. From a given dataset with corresponding labels, will return
         a new data set which has had its majority class undersampled (optional) and its minority class oversampled (optional).
         This is an overriden method of the base smoteTransform class that implements the adaSyn algorithm instead
-        
             
         Returns: A dataset consisting of an oversampled minority class and an undersampled majority class
                  as a tuple (data, labels)
 
         """
-        if adaSynBeta is not None:
-            self.beta = adaSynBeta
-        if underSamplePercentage is not None:
-            self.underSamplePercentage = underSamplePercentage
-        
-        underSampledData, underSampledLabels = self.underSample(data, labels)
-        synData, synLabels = self.adaSynAdd(data, labels)
-        totData, totLabels = combineTestSets(underSampledData, underSampledLabels, synData, synLabels)
-        return totData, totLabels
+        if self.underSamplePercentage != 0:
+            data, labels = self.underSample(data, labels)
+        if self.beta != 0:    
+            synData, synLabels = self.adaSynAdd(data, labels)
+            if synData is not None:
+                data, labels = combineTestSets(data, labels, synData, synLabels)
+        return data, labels 
     
-    def validate(self, data, labels, adaSynBeta = None, toStandardise=False, toShuffle=False, saveFile=False, kfolds=10):
-        """See documenation for validate() in smoteTransform.py.  Performs exact same methodology except we
-           use differing beta parameters as opposed to smote.
-
-        Args:
-            data: examples with all their features
-            labels: classlabels for all corresponding examples.
-            adaSynBeta: Can be specified, otherwise use defaults: [1, 0.9, 0.7, 0.5, 0.3]
-            toStandardise: Do we normalise the data?
-            toShuffle: Do we shuffle the data?
-            kfolds: Number of folds in the CV.
-            
-            returns: a set of AUCs
-
-        """        
-        if not adaSynBeta:
-            adaSynBeta = [1, 0.9, 0.7, 0.5, 0.3]
-        underSamplingPercentages = [10, 15, 25, 50, 75, 100, 125, 150, 175, 200, 300, 400, 500, 600, 700, 800, 1000, 2000]
-        kfold_iterator = cross_validation.KFold(len(data), shuffle=toShuffle, n_folds=kfolds, random_state=self.randomState)
-        aucs = []
-        
-        #The initial datapoint is evaluation of the model without any over- or under-sampling.
-        initialScore = None
-        initialRecalls, initialfallouts = self.cvTree(data, labels, kfold_iterator, noDataChange = True,
-                                                      toStandardise=toStandardise)
-        initialScore = [0, 0, numpy.mean(initialRecalls), numpy.mean(initialfallouts), 
-                        confidence95(initialRecalls), confidence95(initialfallouts)]
-        #print(initialScore)
-        
-        #Then for each oversample percentage, do a series of undersampling of the majority class
-        #This makes 1 ROC curve.
-        for ovsample in adaSynBeta:
-            scores = initialScore
-            for unsample in underSamplingPercentages:
-                totRecall, totfallout = self.cvTree(data, labels, kfold_iterator, 
-                                                    toStandardise=toStandardise, underSamplePercentage=unsample,
-                                                    adaSyn =True,
-                                                    adaSynBeta=ovsample)
-                    
-                assert(scores != None)
-                scores = addRow(scores, [ovsample, unsample, numpy.mean(totRecall), numpy.mean(totfallout), 
-                                         confidence95(totRecall), confidence95(totfallout)])
-                #print(ovsample, unsample, numpy.mean(totRecall), numpy.mean(totfallout), 
-                      #confidence95(totRecall), confidence95(totfallout))
-            
-            auc = calculateAUC(scores[:,2:4])
-            #print(scores)
-            if saveFile:
-                numpy.savetxt('sample' + str(ovsample) + 'auc=' + str(auc)[:5] + '_.csv', scores, delimiter = ',')
-            aucs.append(auc)
-        
-        return aucs
 
 #Used to test the adaSyn class, takes a CSV file, puts it into numpy objects and sends it to the adaSyn class.         
 def main():        

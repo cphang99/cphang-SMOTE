@@ -28,7 +28,7 @@ class smoteTransform:
         randomState: Sets a seed for any random generator functions within the smoteTransform object for testing. 
                         Default = None
     """
-    def __init__(self, k=5, smote=200, underSamplePercentage = 15, minorityLabel =1, randomState=None):
+    def __init__(self, k=5, oversampleParameter=200, underSamplePercentage = 15, minorityLabel =1, randomState=None):
         """Initialisation of the smoteTransform object.
 
         Args:
@@ -43,7 +43,7 @@ class smoteTransform:
 
         """
         self.k = k + 1
-        self.smote = smote
+        self.smote = oversampleParameter
         self.minorityLabel = minorityLabel
         self.randomState = randomState
         self.underSamplePercentage = underSamplePercentage
@@ -152,8 +152,7 @@ class smoteTransform:
             return newData, newLabels
         else:
             return None, None
-
-
+        
     def underSample(self, data, labels):
         """Undersamples the majority class in an imbalanced dataset.
         Args:
@@ -174,7 +173,7 @@ class smoteTransform:
                 numMajorityExamples = 1
         
         
-        assert(numMajorityExamples > 0), str(self.underSamplePercentage)
+        assert(numMajorityExamples > 0), str((self.underSamplePercentage, numMajorityExamples))
         majorityExamplesIndices = random.sample(xrange(0,len(majorityExamples)), numMajorityExamples)
         majorData, majorLabels = samplerNoID(majorityExamples[majorityExamplesIndices])
         minorData, minorLabels = samplerNoID(minorityExamples)
@@ -185,128 +184,7 @@ class smoteTransform:
         
         return totData, totLabels
     
-
-    def validate(self, data, labels, toStandardise=False, smotePercentages = None, toShuffle=False, saveFile = False, kfolds=10):
-        """Generates data-points (fp and tp) for generating a ROC curve through oversampling and undersampling of datasets
-        See the original SMOTE paper for more details. All datapoints are the product of a 10-fold cross-validation.
-        Original paper uses a C4.5 tree classifier. As we're using the scikit-learn library, we're using the CART algorithm
-        instead, which is closely related.
-        
-        The smote percentages are as follows: 100, 200, 300, 400, 500
-        The undersampling percentages are as follows: 10, 15, 25, 50, 75, 100, 125, 150, 175, 200, 300, 400, 
-                                                      500, 600, 700, 800, 1000, 2000
-                                                      
-        For each smote percentage, the AUC is calculated and a csv file is saved corresponding to:
-        smote%, undersample%, mean recall, mean fallout, 95% confidence (recall), 95% confidence (fallout)
-        This file is saved as sample[smote%]auc=[AUC]_.csv
-        Args:
-            data: examples with all their features
-            labels: classlabels for all corresponding examples.
-            toStandardise: whether the datasets should be standardised (0 mean with unit variance) before fitting.
-        """
-        
-        #Percentages used in the ROC paper, with 10-fold cross validation
-        if not smotePercentages:
-            smotePercentages = [100, 200, 300, 400, 500]
-        assert(type(smotePercentages) is list)
-        
-        underSamplingPercentages = [10, 15, 25, 50, 75, 100, 125, 150, 175, 200, 300, 400, 500, 600, 700, 800, 1000, 2000]
-        kfold_iterator = cross_validation.KFold(len(data), shuffle=toShuffle, n_folds=kfolds, random_state=self.randomState)
-        aucs = []
-        #The initial datapoint is evaluation of the model without any over- or under-sampling.
-        initialScore = None
-        initialRecalls, initialfallouts = self.cvTree(data, labels, kfold_iterator, noDataChange = True,
-                                                      toStandardise=toStandardise)
-        initialScore = [0, 0, numpy.mean(initialRecalls), numpy.mean(initialfallouts), 
-                        confidence95(initialRecalls), confidence95(initialfallouts)]
-        #print(initialScore)
-        
-        #Then for each oversample percentage, do a series of undersampling of the majority class
-        #This makes 1 ROC curve.
-        for ovsample in smotePercentages:
-            scores = initialScore
-            for unsample in underSamplingPercentages:
-                totRecall, totfallout = self.cvTree(data, labels, kfold_iterator, 
-                                                    toStandardise=toStandardise, underAndOversample =True,
-                                                    smotePercentage=ovsample, underSamplePercentage=unsample)
-                    
-                assert(scores != None)
-                scores = addRow(scores, [ovsample, unsample, numpy.mean(totRecall), numpy.mean(totfallout), 
-                                         confidence95(totRecall), confidence95(totfallout)])
-                #print(ovsample, unsample, numpy.mean(totRecall), numpy.mean(totfallout), 
-                      #confidence95(totRecall), confidence95(totfallout))
-            
-            auc = calculateAUC(scores[:,2:4])
-            if saveFile:
-                numpy.savetxt('sample' + str(ovsample) + 'auc=' + str(auc)[:5] + '_.csv', scores, delimiter = ',')
-            aucs.append(auc)
-        
-        return aucs
-    
-    def undersampleValidate(self, data, labels, toStandardise=False, toShuffle=False, saveFile = False, kfolds=10):
-        """Generates data-points (fp and tp) for generating a ROC curve through oversampling and undersampling of datasets
-        See the original SMOTE paper for more details. All datapoints are the product of a 10-fold cross-validation
-        Original paper uses a C4.5 tree classifier. As we're using the scikit-learn library, we're using the CART algorithm
-        instead, which is closely related.
-        
-        This function is similar to the validate method, but does not do any SMOTE oversampling. This is used as a comparison
-        between only undersampling, and a combination of over- and under-sampling.
-        
-        The undersampling percentages are as follows: 10, 15, 25, 50, 75, 100, 125, 150, 175, 200, 300, 400, 
-                                                      500, 600, 700, 800, 1000, 2000
-                                                      
-        The AUC is calculated and a csv file is saved corresponding to:
-        undersample%, mean recall, mean fallout, 95% confidence (recall), 95% confidence (fallout)
-        This file is saved as undersampleOnlyauc=[AUC]_.csv
-        
-        Args:
-            data: examples with all their features
-            labels: classlabels for all corresponding examples.
-            toStandardise: whether the datasets should be standardised (0 mean with unit variance) before fitting.
-        
-        Returns: The auc from the resulting roc curve
-        """        
-        #under sampling percentages used in the SMOTE paper
-        underSamplingPercentages = [0, 10, 15, 25, 50, 75, 100, 125, 150, 175, 200, 300, 400, 500, 600, 700, 800, 1000, 2000]
-        kfold_iterator = cross_validation.KFold(len(data), shuffle=toShuffle, n_folds=kfolds, random_state=self.randomState)
-        
-        scores = None
-        doOnce = True
-        for percentage in underSamplingPercentages:
-                totRecall, totfallout = self.cvTree(data, labels, kfold_iterator, 
-                                                    toStandardise=toStandardise,
-                                                    undersampleOnly=True, underSamplePercentage=percentage)
-                if doOnce:
-                    doOnce = False
-                    scores = [percentage, numpy.mean(totRecall), numpy.mean(totfallout), 
-                              confidence95(totRecall), confidence95(totfallout)]
-                else:
-                    scores = addRow(scores, [percentage, numpy.mean(totRecall), numpy.mean(totfallout), 
-                                             confidence95(totRecall), confidence95(totfallout)])
-                assert(scores != None)
-                #print(percentage, numpy.mean(totRecall), numpy.mean(totfallout), 
-                      #confidence95(totRecall), confidence95(totfallout))
-        
-        auc = calculateAUC(scores[:,1:3])
-        
-        if saveFile:
-            numpy.savetxt('undersampleOnly' + 'auc=' + str(auc)[:5] + '_.csv', scores, delimiter = ',')
-        return auc
-    
-    def score(self, vaData, vaLabel, model):
-        """Returns the recall and fallout score given the data, its corresponding labels and the model itself
-        Args:
-            vadata: validation data examples with all their features
-            valabels: classlabels for all corresponding validation data examples.
-            model: The model (which should already be trained with training data)
-            
-        Returns: The recall and fallout score as a tuple.
-
-        """        
-        vaPreds = model.predict(vaData)
-        return mets.recall_score(vaLabel, vaPreds), fallout(vaLabel, vaPreds)
-    
-    def getProcessedData(self, data, labels, underSamplePercentage=None, smotePercentage=None):
+    def getProcessedData(self, data, labels):
         """Conveinence method. From a set of smote parameters and a given dataset with corresponding labels, will return
         a new data set which has had its majority class undersampled (optional) and its minority class oversampled (optional).
         The undersample and smote percentages can be set to different values from the original class variables.
@@ -317,85 +195,19 @@ class smoteTransform:
             model: The model (which should already be trained with training data)
             
         Returns: A dataset consisting of an oversampled minority class and an undersampled majority class
-                 as a tuple (data, labels)
+                    as a tuple (data, labels)
 
         """ 
-        if underSamplePercentage is not None:
-            self.underSamplePercentage = underSamplePercentage
-            data, labels = self.underSample(data, labels)
-        if smotePercentage is not None:
-            self.smote = smotePercentage
-        
         
         #generate synthetic samples and combine them with the original samples
+        if self.underSamplePercentage != 0:
+            data, labels = self.underSample(data, labels)
         if self.smote != 0:
             synData, synLabels = self.fit(data, labels).transform()
-            data, labels = combineTestSets(data, labels, synData, synLabels)
+            if synData is not None:
+                data, labels = combineTestSets(data, labels, synData, synLabels)
         
         return data, labels
-    
-    
-    def cvTree(self, data, labels, kfold_iterator, 
-               toStandardise=False, underAndOversample=False, noDataChange = False,
-               undersampleOnly= False, smotePercentage=None, underSamplePercentage=None,
-               adaSyn= False, adaSynBeta = None):
-        """Performs cross validation.
-        
-        Args:
-            data: test data
-            labels: Corresponding labels for the test data
-            kfold_iterator: The iterator used to generate the folds for the CV
-            toStandardise: If the dataset is to be normalised
-            underAndOversample: Should it be under and over-sampled?
-            noDataChange: If CV should be performed on the original set
-            undersampleOnly: Under sampling only
-            smotePercentage: A set SMOTE percentage, otherwise just uses the class Attribute
-            underSamplePercentage: see above
-            adaSyn: Should the oversampling be done on using the AdaSyn alg?
-            adaSynBeta: If adaSyn alg is to be done, set the beta parameter.
-            
-        Returns: A set of scores from the cross validation
-
-        """ 
-        totRecall = []
-        totfallout = []
-        for train_indice, val_indice in kfold_iterator:
-            trData, trLabel, vaData, vaLabel = sampleFromIndices(data, labels, train_indice, val_indice, 
-                                                                 standardise=toStandardise)
-            if (numpy.all(trLabel == self.minorityLabel)) or (numpy.all(trLabel == abs(self.minorityLabel - 1))):
-                if trLabel[0] == 1:
-                    currentRecall = 0
-                    currentFallout = 1
-                else:
-                    currentRecall = 1
-                    currentFallout = 0
-                print("WARNING: only one class present in label")
-            elif noDataChange:
-                totData, totLabels = trData, trLabel
-            elif undersampleOnly:
-                totData, totLabels = self.getProcessedData(trData, trLabel, 
-                                                           underSamplePercentage=underSamplePercentage,
-                                                           smotePercentage = 0)
-            elif underAndOversample:
-                totData, totLabels = self.getProcessedData(trData, trLabel,
-                                                           underSamplePercentage=underSamplePercentage,
-                                                           smotePercentage= smotePercentage)
-            elif adaSyn:
-                assert(adaSynBeta != None)
-                totData, totLabels = self.getProcessedData(trData, trLabel,
-                                                           underSamplePercentage=underSamplePercentage, adaSynBeta=adaSynBeta)
-            else:
-                raise AssertionError
-                
-            clf = treeClf(random_state = self.randomState)
-            clf.fit(totData, totLabels)
-                
-            currentRecall, currentFallout = self.score(vaData, vaLabel, clf)
-            
-            totRecall.append(currentRecall)
-            totfallout.append(currentFallout)
-            #print(mets.recall_score(vaLabel, vaPreds), fallout(vaLabel, vaPreds))
-        return totRecall, totfallout
     
     def _getMinorityClass(self, data, labels):
         """Extracts examples labelled with minority class from the overall data set.
@@ -442,9 +254,187 @@ class smoteTransform:
         
         return majorityExamples, minorityExamples
     
+
+
+####Global Methods###
+
+def validate(data, labels, toStandardise=False, 
+             overSamplingPercentages = None, toShuffle=False, 
+             saveFile = False, randomState=None, samplingMethodology=smoteTransform, kfolds=10):
+    """Generates data-points (fp and tp) for generating a ROC curve through oversampling and undersampling of datasets
+    See the original SMOTE paper for more details. All datapoints are the product of a 10-fold cross-validation.
+    Original paper uses a C4.5 tree classifier. As we're using the scikit-learn library, we're using the CART algorithm
+    instead, which is closely related.
     
+    The smote percentages are as follows: 100, 200, 300, 400, 500
+    The undersampling percentages are as follows: 10, 15, 25, 50, 75, 100, 125, 150, 175, 200, 300, 400, 
+                                                    500, 600, 700, 800, 1000, 2000
+                                                    
+    For each smote percentage, the AUC is calculated and a csv file is saved corresponding to:
+    smote%, undersample%, mean recall, mean fallout, 95% confidence (recall), 95% confidence (fallout)
+    This file is saved as sample[smote%]auc=[AUC]_.csv
+    Args:
+        data: examples with all their features
+        labels: classlabels for all corresponding examples.
+        toStandardise: whether the datasets should be standardised (0 mean with unit variance) before fitting.
+    """
+    
+    
+    
+    #Percentages used in the ROC paper, with 10-fold cross validation
+    if not overSamplingPercentages:
+        overSamplingPercentages = [100, 200, 300, 400, 500]
+    assert(type(overSamplingPercentages) is list)
+    
+    underSamplingPercentages = [10, 15, 25, 50, 75, 100, 125, 150, 175, 200, 300, 400, 500, 600, 700, 800, 1000, 2000]
+    kfold_iterator = cross_validation.KFold(len(data), shuffle=toShuffle, n_folds=kfolds, random_state=randomState)
+    aucs = []
+    #The initial datapoint is evaluation of the model without any over- or under-sampling.
+    initialScore = None
+    initialRecalls, initialfallouts = cvTree(data, labels, kfold_iterator, toStandardise=toStandardise, randomState=randomState)
+    initialScore = [0, 0, numpy.mean(initialRecalls), numpy.mean(initialfallouts), 
+                    confidence95(initialRecalls), confidence95(initialfallouts)]
+    #print(initialScore)
+    
+    #Then for each oversample percentage, do a series of undersampling of the majority class
+    #This makes 1 ROC curve.
+    for ovsample in overSamplingPercentages:
+        scores = initialScore
+        for unsample in underSamplingPercentages:
+            smoteObj = samplingMethodology(oversampleParameter = ovsample, underSamplePercentage = unsample, 
+                                           randomState = randomState)
+            totRecall, totfallout = cvTree(data, labels, kfold_iterator, 
+                                                toStandardise=toStandardise, smote = smoteObj)
+                
+            assert(scores != None)
+            scores = addRow(scores, [ovsample, unsample, numpy.mean(totRecall), numpy.mean(totfallout), 
+                                        confidence95(totRecall), confidence95(totfallout)])
+            #print(ovsample, unsample, numpy.mean(totRecall), numpy.mean(totfallout), 
+                    #confidence95(totRecall), confidence95(totfallout))
+        
+        auc = calculateAUC(scores[:,2:4])
+        if saveFile:
+            numpy.savetxt('sample' + str(ovsample) + 'auc=' + str(auc)[:5] + '_.csv', scores, delimiter = ',')
+        aucs.append(auc)
+    
+    return aucs
+
+def undersampleValidate(data, labels, toStandardise=False, toShuffle=False, saveFile = False, randomState=None, kfolds=10):
+    """Generates data-points (fp and tp) for generating a ROC curve through oversampling and undersampling of datasets
+    See the original SMOTE paper for more details. All datapoints are the product of a 10-fold cross-validation
+    Original paper uses a C4.5 tree classifier. As we're using the scikit-learn library, we're using the CART algorithm
+    instead, which is closely related.
+    
+    This function is similar to the validate method, but does not do any SMOTE oversampling. This is used as a comparison
+    between only undersampling, and a combination of over- and under-sampling.
+    
+    The undersampling percentages are as follows: 10, 15, 25, 50, 75, 100, 125, 150, 175, 200, 300, 400, 
+                                                    500, 600, 700, 800, 1000, 2000
+                                                    
+    The AUC is calculated and a csv file is saved corresponding to:
+    undersample%, mean recall, mean fallout, 95% confidence (recall), 95% confidence (fallout)
+    This file is saved as undersampleOnlyauc=[AUC]_.csv
+    
+    Args:
+        data: examples with all their features
+        labels: classlabels for all corresponding examples.
+        toStandardise: whether the datasets should be standardised (0 mean with unit variance) before fitting.
+    
+    Returns: The auc from the resulting roc curve
+    """        
+    #under sampling percentages used in the SMOTE paper
+    underSamplingPercentages = [0, 10, 15, 25, 50, 75, 100, 125, 150, 175, 200, 300, 400, 500, 600, 700, 800, 1000, 2000]
+    kfold_iterator = cross_validation.KFold(len(data), shuffle=toShuffle, n_folds=kfolds, random_state=randomState)
+    
+    scores = None
+    doOnce = True
+    for percentage in underSamplingPercentages:
+            smoteObj = smoteTransform(oversampleParameter = 0, underSamplePercentage = percentage, randomState = randomState)
+            totRecall, totfallout = cvTree(data, labels, kfold_iterator, 
+                                                toStandardise=toStandardise,
+                                                smote = smoteObj)
+            if doOnce:
+                doOnce = False
+                scores = [percentage, numpy.mean(totRecall), numpy.mean(totfallout), 
+                            confidence95(totRecall), confidence95(totfallout)]
+            else:
+                scores = addRow(scores, [percentage, numpy.mean(totRecall), numpy.mean(totfallout), 
+                                            confidence95(totRecall), confidence95(totfallout)])
+            assert(scores != None)
+            #print(percentage, numpy.mean(totRecall), numpy.mean(totfallout), 
+                    #confidence95(totRecall), confidence95(totfallout))
+    
+    auc = calculateAUC(scores[:,1:3])
+    
+    if saveFile:
+        numpy.savetxt('undersampleOnly' + 'auc=' + str(auc)[:5] + '_.csv', scores, delimiter = ',')
+    return auc
+
+def score(vaData, vaLabel, model):
+    """Returns the recall and fallout score given the data, its corresponding labels and the model itself
+    Args:
+        vadata: validation data examples with all their features
+        valabels: classlabels for all corresponding validation data examples.
+        model: The model (which should already be trained with training data)
+        
+    Returns: The recall and fallout score as a tuple.
+
+    """        
+    vaPreds = model.predict(vaData)
+    return mets.recall_score(vaLabel, vaPreds), fallout(vaLabel, vaPreds)
 
 
+def cvTree(data, labels, kfold_iterator, 
+            toStandardise=False, smote = None, randomState = None):
+    """Performs cross validation.
+    
+    Args:
+        data: test data
+        labels: Corresponding labels for the test data
+        kfold_iterator: The iterator used to generate the folds for the CV
+        toStandardise: If the dataset is to be normalised
+        smote: The smoteTransform object with relevant parameters for over and under sampling
+        
+    Returns: A set of scores from the cross validation
+
+    """ 
+    totRecall = []
+    totfallout = []
+    for train_indice, val_indice in kfold_iterator:
+        trData, trLabel, vaData, vaLabel = sampleFromIndices(data, labels, train_indice, val_indice, 
+                                                                standardise=toStandardise)
+        if smote == None:
+            totData, totLabels = trData, trLabel
+        elif (numpy.all(trLabel == smote.minorityLabel)) or (numpy.all(trLabel == abs(smote.minorityLabel - 1))):
+            if trLabel[0] == 1:
+                currentRecall = 0
+                currentFallout = 1
+            else:
+                currentRecall = 1
+                currentFallout = 0
+            print("WARNING: only one class present in label")
+            continue
+        else:
+            totData, totLabels = smote.getProcessedData(trData, trLabel)
+        
+        if smote != None:
+            clf = treeClf(random_state = smote.randomState)
+        else:
+            clf = treeClf(random_state = randomState)
+        clf.fit(totData, totLabels)
+            
+        currentRecall, currentFallout = score(vaData, vaLabel, clf)
+        
+        totRecall.append(currentRecall)
+        totfallout.append(currentFallout)
+        #print(mets.recall_score(vaLabel, vaPreds), fallout(vaLabel, vaPreds))
+    return totRecall, totfallout
+
+
+
+
+
+##################TEST METHODS############################
 #Testing of the smoteTransform class
 #Generates synthetic samples for further inspection.
 def testPopulate():
@@ -454,7 +444,7 @@ def testPopulate():
     smotePercentages = [200, 300, 400, 500]
     print(smotePercentages)
     for sp in smotePercentages:
-        tr = smoteTransform(smote = sp)
+        tr = smoteTransform(oversampleParameter = sp)
         mindata, minlabels = tr.fit(data, labels).transform()
         numpy.savetxt('syn' + str(sp) + '.csv', numpy.concatenate((mindata, numpy.c_[minlabels]), axis=1), delimiter = ',')
 
@@ -464,7 +454,7 @@ def testUndersample():
     csvFileName = 'phoneme.csv'
     dataSet = numpy.genfromtxt(csvFileName, dtype=float, delimiter=",")
     data, labels = samplerNoID(dataSet)
-    tr = smoteTransform(smote = 200, underSamplePercentage = 500)
+    tr = smoteTransform(oversampleParameter = 200, underSamplePercentage = 500)
     synData, synLabels = tr.fit(data, labels).transform()
     data, labels = tr.underSample(data, labels)
     
@@ -476,25 +466,13 @@ def testUndersample():
 #Generates data sets from re-sampling of a dataset into a CSV file, so that it can be displayed
 #(such as by showtask() in mlotools)
 def genDataSets(data, labels, filename):
-    smote = smoteTransform(smote=500, underSamplePercentage=75)
+    smote = smoteTransform(oversampleParameter=500, underSamplePercentage=75)
     processedData, processedLabels = smote.getProcessedData(data, labels)
     saveDataSets(processedData, processedLabels, filename)
     
 
-#Testing the smote function 200-500%
 # https://archive.ics.uci.edu/ml/datasets/Pima+Indians+Diabetes Pima dataset
 # http://sci2s.ugr.es/keel/dataset.php?cod=105 Phoneme dataset
-def main():
-    csvFileName = './datasets/glass5.csv'
-    dataSet = numpy.genfromtxt(csvFileName, dtype=float, delimiter=",")
-    data, labels = samplerNoID(dataSet)
-    smote = smoteTransform(smote=400, underSamplePercentage=50)
-    auc = smote.undersampleValidate(data, labels, toStandardise=False, toShuffle=True, kfolds=10)  
-    aucs = smote.validate(data, labels, toStandardise=False, toShuffle=True, kfolds=10)  
-    numpy.savetxt("auc_data", aucs, delimiter = ',')
-    print("undersampling = 0 auc = {0}".format(auc))
-
-
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
