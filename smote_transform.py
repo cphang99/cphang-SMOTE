@@ -433,7 +433,6 @@ def cvTree(data, labels, kfold_iterator,
 
 
 
-
 ##################TEST METHODS############################
 #Testing of the smoteTransform class
 #Generates synthetic samples for further inspection.

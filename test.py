@@ -3,6 +3,7 @@ import data_set
 import numpy
 import smote_transform
 import ada_syn
+import smote_pipeline
 
 class test_smote(unittest.TestCase):
     def setUp(self):
