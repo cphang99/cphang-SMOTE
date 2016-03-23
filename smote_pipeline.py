@@ -3,23 +3,31 @@ import smote_transform
 import dataParsing
 
 class smotePipeline:
-    def __init__(self, steps):
+    def __init__(self, steps, randomState=None):
         self.steps = steps
         self.finalEstimator = None
+        self.randomState = randomState
     
     def fit(self, data, labels):
         estimator = None
         for step in self.steps[:-1]:
             process = step()
             try:
-                data, labels = process.getProcessedData(data, labels)
+                data, labels = step(randomState=self.randomState).getProcessedData(data, labels)
             except:
                 data =  process.fit_transform(data, labels)
         else:
-            process = step()
-            self.finalEstimator = process.fit(data, labels)
+            process = self.steps[-1]()
+            process.fit(data, labels)
+            self.finalEstimator = process
         
-        return True
+        return self
+    
+    def predict(self, data):
+        try:
+            return self.finalEstimator.predict(data)
+        except:
+            print("Unable to predict with final estimator")
      
         
     
