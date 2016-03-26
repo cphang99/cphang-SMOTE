@@ -53,7 +53,9 @@ class adaSyn(smote_transform.smoteTransform):
             if labels[index] == abs(1 - self.minorityLabel):
                 continue
             
-            nrpoints = self.densityclf.kneighbors(data[index,:], return_distance=False)
+            #Reshaping required as "Passing 1d arrays as data is deprecated in 0.17" and reshaping the array
+            # to (1,-1) is required
+            nrpoints = self.densityclf.kneighbors(data[index,:].reshape(1,-1), return_distance=False)
             nrpoints = numpy.setdiff1d(nrpoints, [index])
             if self.minorityLabel == 1:
                 num_majority = self.k - numpy.count_nonzero(labels[nrpoints])

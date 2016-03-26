@@ -4,11 +4,13 @@ import numpy
 import smote_transform
 import ada_syn
 import smote_pipeline
+import testClf
 
 import sklearn.datasets
 import sklearn.preprocessing
 import sklearn.svm
 import sklearn.cross_validation
+import sklearn.utils.estimator_checks
 
 class test_smote(unittest.TestCase):
     def setUp(self):
@@ -26,3 +28,7 @@ class test_smote(unittest.TestCase):
         manualPredict = estimator.predict(self.testingData)
         
         self.assertTrue(numpy.array_equal(pipelinePredict, manualPredict))
+    
+    def test_checkClassifierPass(self):
+        sklearn.utils.estimator_checks.check_estimator(smote_transform.smoteTransform)
+        

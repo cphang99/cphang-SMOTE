@@ -14,7 +14,7 @@ from sklearn import cross_validation
 import sklearn.metrics as mets
 import sklearn.utils as utils
 
-class smoteTransform:
+class smoteTransform(object):
     """Performs the SMOTE transform on unbalanced data sets.
 
     Uses fit and transform methods to conform with general API of scikit-learn
@@ -83,7 +83,6 @@ class smoteTransform:
         if numRepeatArray is None:
             numRepeatArray = [(self.smote // 100) for elem in xrange(0, len(self.minorityExamples))]
             
-            
         assert(self.minorityData != None and self.minorityLabels != None and self.minorityExamples != None)
         doOnce = False
         newPoints = []
@@ -91,23 +90,24 @@ class smoteTransform:
         numExamples, numFeatures = getCharacteristics(self.minorityData) #get all the important characteristics of the data
         index = 0 #so we know which index we're at
         numSyntheticSamples = 0 #so we know how many synthetic samples have been created!
+        
         for ex in self.minorityExamples:
-            
             #see above, this gets the nearest points of the current example
             #in this context a nearest neighbor is also classed as itself, which we don't want. 
             #So get 6 points, and do a set difference to get the true 5 nearest neighbors
             #print((self.minorityData[index,:]))
             #We also need to deal with a corner case if the number of minority examples is less than k in knn
             if len(self.minorityExamples) < self.k:
+                #Reshaping required as "Passing 1d arrays as data is deprecated in 0.17" and reshaping the array
+                # to (1,-1) is required
                 if not doOnce:
                     print("WARNING: Number of minor class examples < k in knn, " 
                         "returning all {0} members".format(len(self.minorityExamples)))
                     doOnce = True
-                
-                nearestPoints = self.clf.kneighbors(self.minorityData[index,:], 
+                nearestPoints = self.clf.kneighbors(self.minorityData[index,:].reshape(1,-1), 
                                                     n_neighbors=len(self.minorityExamples), return_distance=False)
             else:
-                nearestPoints = self.clf.kneighbors(self.minorityData[index,:], return_distance=False)
+                nearestPoints = self.clf.kneighbors(self.minorityData[index,:].reshape(1,-1), return_distance=False)
             
             nearestPoints = numpy.setdiff1d(nearestPoints, [index])
             #print(numExamples)

@@ -2,9 +2,12 @@ import sklearn.base
 import smote_transform
 import dataParsing
 
-class smotePipeline:
-    def __init__(self, steps, randomState=None):
-        self.steps = steps
+class smotePipeline(sklearn.base.BaseEstimator, sklearn.base.ClassifierMixin):
+    def __init__(self, steps=None, randomState=None):
+        if steps is None:
+            steps = [smote_transform.smoteTransform]
+        else:
+            self.steps = steps
         self.finalEstimator = None
         self.randomState = randomState
     
