@@ -31,6 +31,12 @@ class smotePipeline(sklearn.base.BaseEstimator, sklearn.base.ClassifierMixin):
             return self.finalEstimator.predict(data)
         except:
             print("Unable to predict with final estimator")
+    
+    def get_params(self):
+        pass
+    
+    def set_params(self, **params):
+        pass
      
         
     

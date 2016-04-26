@@ -4,7 +4,6 @@ import numpy
 import smote_transform
 import ada_syn
 import smote_pipeline
-import testClf
 
 import sklearn.datasets
 import sklearn.preprocessing
@@ -18,17 +17,21 @@ class test_smote(unittest.TestCase):
         self.trainingData, self.testingData, self.trainingLabels, self.testingLabels = sklearn.cross_validation.train_test_split(self.data, self.labels, random_state=255)
     
     #Tests manual and automatic construction of a list.
-    def test_pipeline(self):
-        steps = [smote_transform.smoteTransform, sklearn.preprocessing.MinMaxScaler, sklearn.svm.SVC]
-        pipelinePredict = smote_pipeline.smotePipeline(steps, randomState=255).fit(self.trainingData, self.trainingLabels).predict(self.testingData)
+    #def test_pipeline(self):
+        #steps = [smote_transform.smoteTransform, sklearn.preprocessing.MinMaxScaler, sklearn.svm.SVC]
+        #pipelinePredict = smote_pipeline.smotePipeline(steps, randomState=255).fit(self.trainingData, self.trainingLabels).predict(self.testingData)
         
-        data, labels = smote_transform.smoteTransform(randomState=255).getProcessedData(self.trainingData, self.trainingLabels)
-        data = sklearn.preprocessing.MinMaxScaler().fit_transform(data, labels)
-        estimator = sklearn.svm.SVC().fit(data, labels)
-        manualPredict = estimator.predict(self.testingData)
+        #data, labels = smote_transform.smoteTransform(randomState=255).getProcessedData(self.trainingData, self.trainingLabels)
+        #data = sklearn.preprocessing.MinMaxScaler().fit_transform(data, labels)
+        #estimator = sklearn.svm.SVC().fit(data, labels)
+        #manualPredict = estimator.predict(self.testingData)
         
-        self.assertTrue(numpy.array_equal(pipelinePredict, manualPredict))
+        #self.assertTrue(numpy.array_equal(pipelinePredict, manualPredict))
     
+    #def test_getParams(self):
+        #self.assertEqual(smote_transform.smoteTransform().get_params(), 
+                         #{'minorityLabel': 1, 'underSamplePercentage': 15, 'k': 5, 'randomState': None, 'oversampleParameter': 200})
+
     def test_checkClassifierPass(self):
         sklearn.utils.estimator_checks.check_estimator(smote_transform.smoteTransform)
         

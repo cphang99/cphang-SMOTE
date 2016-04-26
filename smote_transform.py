@@ -7,14 +7,17 @@ Note that this implementation is only suitable for datasets which have binary cl
 import numpy
 import scipy
 import random
+from numbers import Number
 from sklearn import neighbors
 from sklearn.tree import DecisionTreeClassifier as treeClf
 from dataParsing import *
 from sklearn import cross_validation
 import sklearn.metrics as mets
 import sklearn.utils as utils
+import sklearn.base
+import pdb
 
-class smoteTransform(object):
+class smoteTransform(sklearn.base.BaseEstimator):
     """Performs the SMOTE transform on unbalanced data sets.
 
     Uses fit and transform methods to conform with general API of scikit-learn
@@ -33,7 +36,7 @@ class smoteTransform(object):
 
         Args:
             k: number of nearest neighbors. Default = 5
-            smote: the oversampling SMOTE percentage. Default = 200
+            oversampleParameter: the oversampling SMOTE percentage. Default = 200
             underSamplePercentage: How much to undersample the majority class. Default = 15 (%)
             minorityLabel: the class of the minority label. Default =1
             randomState: Sets a seed for any random generator functions within the smoteTransform object for testing. 
@@ -42,35 +45,42 @@ class smoteTransform(object):
         Returns: a smoteTransform object
 
         """
-        self.k = k + 1
-        self.smote = oversampleParameter
+        self.k = k
+        self.oversampleParameter = oversampleParameter
         self.minorityLabel = minorityLabel
         self.randomState = randomState
         self.underSamplePercentage = underSamplePercentage
-        self.clf = None
-        self.SynData = None
-        self.SynLabels = None
-        self.minorityExamples = None
-        
-        self.minorityData = None #Note this refers to original data, but *only* of the minority class.
-        self.minorityLabels = None #Note this refers to original data, but *only* of the minority class.
         
 
-    def fit(self, data, labels):
+    def fit(self, X, y):
         """Fits the minority data to a knn classifier from a class
 
         Args:
-            data: examples with all their features
-            labels: classlabels for all corresponding examples.
+            X: examples with all their features
+            y: classlabels for all corresponding examples.
             
             returns: a smoteTransform object with a fitted data model.
 
         """
-        self.minorityExamples, self.minorityData, self.minorityLabels = self._getMinorityClass(data, labels)
+        examples, features = getCharacteristics(X)
+        if features == 0:
+            raise ValueError("{0} feature(s) (shape=({1}, {2})) while a minimum of {3} is required.".format
+                             (features, examples, features, 2))
+        "0 feature\(s\) \(shape=\(3, 0\)\) while a minimum of \d* is required."
+        #type checking to ensure all values are strings or integers
+        for v in numpy.nditer(X,['refs_ok']):
+            try:
+                float(v)
+            except:
+                raise TypeError("'{0}' argument must be a string or a number, but it is type {1}".format(v, type(v)))
+                
+        
+        self.minorityExamples, self.minorityData, self.minorityLabels = self._getMinorityClass(X, y)
 
         #use a knn classifier to identify the nearest neighbors we require
-        self.clf = neighbors.KNeighborsClassifier(n_neighbors=self.k)    
-        self.clf.fit(self.minorityData, self.minorityLabels)
+        #Note for fitting the clf, we only want the nearest neighbors, so the labels aren't important
+        self.clf = neighbors.KNeighborsClassifier(n_neighbors=self.k + 1)
+        self.clf.fit(self.minorityData, numpy.random.randint(0,1,len(self.minorityLabels)))
         
         return self
     
@@ -81,7 +91,7 @@ class smoteTransform(object):
 
         """            
         if numRepeatArray is None:
-            numRepeatArray = [(self.smote // 100) for elem in xrange(0, len(self.minorityExamples))]
+            numRepeatArray = [(self.oversampleParameter // 100) for elem in xrange(0, len(self.minorityExamples))]
             
         assert(self.minorityData != None and self.minorityLabels != None and self.minorityExamples != None)
         doOnce = False
@@ -97,7 +107,7 @@ class smoteTransform(object):
             #So get 6 points, and do a set difference to get the true 5 nearest neighbors
             #print((self.minorityData[index,:]))
             #We also need to deal with a corner case if the number of minority examples is less than k in knn
-            if len(self.minorityExamples) < self.k:
+            if len(self.minorityExamples) < self.k + 1:
                 #Reshaping required as "Passing 1d arrays as data is deprecated in 0.17" and reshaping the array
                 # to (1,-1) is required
                 if not doOnce:
@@ -141,8 +151,8 @@ class smoteTransform(object):
             
             index += 1
         
-        if saveSynPoints:
-            numpy.savetxt('synpoints.csv', numpy.c_[newPoints], delimiter= ',')
+        #if saveSynPoints:
+            #numpy.savetxt('synpoints.csv', numpy.c_[newPoints], delimiter= ',')
         
         newPointsNPArray = numpy.asarray(newPoints)
         
@@ -153,17 +163,17 @@ class smoteTransform(object):
         else:
             return None, None
         
-    def underSample(self, data, labels):
+    def underSample(self, X, y):
         """Undersamples the majority class in an imbalanced dataset.
         Args:
-            data: examples with all their features
-            labels: classlabels for all corresponding examples.
+            X: examples with all their features
+            y: classlabels for all corresponding examples.
         
-        Returns: a dataset with a set quantity of the majority class removed (undersampled) as a tuple of (data, labels).
+        Returns: a dataset with a set quantity of the majority class removed (undersampled) as a tuple of (X, y).
 
         """
         random.seed(self.randomState)
-        majorityExamples, minorityExamples = self._getClassSplit(data, labels)
+        majorityExamples, minorityExamples = self._getClassSplit(X, y)
         numMajorityExamples = 0
         if self.underSamplePercentage < 100:
             numMajorityExamples = int(float(len(majorityExamples)) * ((100-float(self.underSamplePercentage))/100))
@@ -184,7 +194,7 @@ class smoteTransform(object):
         
         return totData, totLabels
     
-    def getProcessedData(self, data, labels):
+    def getProcessedData(self, X, y):
         """Conveinence method. From a set of smote parameters and a given dataset with corresponding labels, will return
         a new data set which has had its majority class undersampled (optional) and its minority class oversampled (optional).
         The undersample and smote percentages can be set to different values from the original class variables.
@@ -201,41 +211,41 @@ class smoteTransform(object):
         
         #generate synthetic samples and combine them with the original samples
         if self.underSamplePercentage != 0:
-            data, labels = self.underSample(data, labels)
-        if self.smote != 0:
-            synData, synLabels = self.fit(data, labels).transform()
+            X, y = self.underSample(X, y)
+        if self.oversampleParameter != 0:
+            synData, synLabels = self.fit(X, y).transform()
             if synData is not None:
-                data, labels = combineTestSets(data, labels, synData, synLabels)
+                X, y = combineTestSets(X, y, synData, synLabels)
         
-        return data, labels
+        return X, y
     
-    def _getMinorityClass(self, data, labels):
+    def _getMinorityClass(self, X, y):
         """Extracts examples labelled with minority class from the overall data set.
         Args:
-            data: datapoints corresponding to the minority label
-            labels: the minority label
+            X: datapoints corresponding to the minority label
+            y: the minority label
             
         returns: A dataset containing only examples labelled with the minority class as:
                  minorityExamples (data and labels combined), minorityData, minorityLabels
 
         """            
         #get the labels into a column vector
-        clabels = numpy.reshape(labels, (labels.shape[0], 1))
+        clabels = numpy.reshape(y, (y.shape[0], 1))
         
         #concatenate with the data
-        dataSet = numpy.concatenate((data, clabels), axis=1)
+        dataSet = numpy.concatenate((X, clabels), axis=1)
         
         #filter the dataset to include only the minority examples, and make a new dataset based on this.
-        cond = (labels == self.minorityLabel)
+        cond = (y == self.minorityLabel)
         minorityExamples = dataSet[cond]
         #print(csv[cond])
         
         return minorityExamples, minorityExamples[:,:-1], minorityExamples[:,-1]
 
-    def _getClassSplit(self, data, labels):
+    def _getClassSplit(self, X, y):
         """Splits a dataset into two separate numpy arrays corresponding to the majority class and the minority class.
         Args:
-            data: datapoints corresponding to the minority label
+            X: datapoints corresponding to the minority label
             labels: the minority label
             
         returns: A dataset containing only examples labelled with the minority class as a tuple (majorityExamples, minorityExamples).
@@ -244,13 +254,13 @@ class smoteTransform(object):
         majorityLabel = abs(self.minorityLabel - 1)
         
         #get the labels into a column vector
-        clabels = numpy.reshape(labels, (labels.shape[0], 1))
+        clabels = numpy.reshape(y, (y.shape[0], 1))
         
         #concatenate with the data
-        dataSet = numpy.concatenate((data, clabels), axis=1)
+        dataSet = numpy.concatenate((X, clabels), axis=1)
         
-        majorityExamples = dataSet[labels == majorityLabel]
-        minorityExamples = dataSet[labels == self.minorityLabel]
+        majorityExamples = dataSet[y == majorityLabel]
+        minorityExamples = dataSet[y == self.minorityLabel]
         
         return majorityExamples, minorityExamples
     
